@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace afds {
     class Program {
@@ -6,6 +7,9 @@ namespace afds {
 
         // TODO: init State with 'time' and system clock (seconds)
         // Use this system clock as loop for the whole program
+
+        // Use Event List as input (JSON?)
+        readInput();
 
         // Create 13 trams
         Tram[] trams = new Tram[13];
@@ -23,6 +27,16 @@ namespace afds {
         Console.WriteLine("New UithofLijn created!");
 
         uithoflijn.Start(trams, stations);
+      }
+
+      static void readInput() {
+        using (StreamReader reader = new StreamReader("eventlist")) {
+        // using (StreamReader sr = File.OpenText("eventlist")) {
+          string line;
+          while ((line = reader.ReadLine()) != null) {
+            // execute step per event
+          }
+        }
       }
     }
 
@@ -67,4 +81,6 @@ namespace afds {
       public void Time() {
       }
     }
+
+    // End Condition
 }
