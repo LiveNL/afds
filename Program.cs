@@ -20,16 +20,19 @@ namespace afds {
         using (StreamReader reader = new StreamReader("eventlist")) {
           string line;
           while ((line = reader.ReadLine()) != null) {
-            // execute step per event
-            // use uithoflijn and state
+            // parse input
             string[] eventt = line.Split(',');
             int stationNumber  = Int32.Parse(eventt[0]);
             DateTime arrival   = DateTime.Parse(eventt[1]);
             DateTime departure = DateTime.Parse(eventt[2]);
 
-            // Check for EndCondition
             // TODO: maybe just handle arrival/departure as separate events?
-            uithoflijn.Update(stationNumber, arrival, departure);
+            // Create new event for departure after arrival (with RNG/distribution)
+            uithoflijn.Update(stationNumber, arrival, departure, state);
+
+            Console.WriteLine(state.ProgramClock);
+
+            // TODO: Check for EndCondition
           }
         }
       }
@@ -98,14 +101,16 @@ namespace afds {
         Trams = trams;
       }
 
-      public void Update(int station, DateTime arr, DateTime dep) {
-
+      public void Update(int station, DateTime arr, DateTime dep, State state) {
+        state.ProgramClock = arr;
       }
     }
 
     public class State {
-      public void ProgramClock() {
-        // update "Time" based on events
+      DateTime time;
+      public DateTime ProgramClock {
+        get { return this.time; }
+        set { this.time = value; }
       }
 
       public DateTime Time() {
