@@ -8,7 +8,13 @@ namespace afds {
     public Station(int i) {
       Number = i;
       Passengers = i;
-      // Console.WriteLine("New Station #{0} created!", i);
+    }
+
+    public Station NextStation(Station[] stations) {
+      int next = this.Number + 1;
+
+      if (next < 18) { next = next; } else { next = 0; };
+      return stations[next];
     }
   }
 }

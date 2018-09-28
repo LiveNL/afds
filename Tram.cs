@@ -7,12 +7,11 @@ namespace afds {
     public int Passengers { get; set; }
     public Station Station { get; set; }
 
-    public Tram(int i) {
+    public Tram(int i, Station station) {
       Number = i;
       Schedule = i;
       Passengers = i;
-      Station = null;
-      // Console.WriteLine("New Tram #{0} created!", i);
+      Station = station;
     }
   }
 }
