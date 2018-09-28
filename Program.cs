@@ -4,7 +4,6 @@ using System.IO;
 namespace afds {
   class Program {
     static void Main(string[] args) {
-      // init uithoflijn && state
       Uithoflijn uithoflijn = new Uithoflijn();
       State state           = new State();
 
