@@ -10,14 +10,14 @@ namespace afds {
       State state           = new State();
       List<Event> events    = new List<Event>();
 
-      events.Add(new Event(DateTime.Parse("7:00:00 AM"), 0, 0));
+      events.Add(new Event(DateTime.Parse("7:00:00 AM"), 0, uithoflijn.Trams[0]));
 
       bool endCondition = false;
       while (endCondition == false) {
         Event nextEvent = timingRoutine(uithoflijn, state, events);
         eventRoutine(uithoflijn, state, nextEvent, events);
 
-        if (!events.Any() || state.SimulationClock > DateTime.Parse("7:00:00 PM")) {
+        if (!events.Any() || state.SimulationClock > DateTime.Parse("8:00:00 AM")) {
           endCondition = true;
         };
       }

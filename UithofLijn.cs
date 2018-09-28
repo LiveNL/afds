@@ -24,42 +24,34 @@ namespace afds {
       Trams = trams;
     }
 
-    public void Update(Uithoflijn uithoflijn, Event eventt, List<Event> events) {
-      Tram tram     = uithoflijn.Trams[eventt.TramNr];
-      int eventType = eventt.EventType;
+    public void Update(Uithoflijn uithoflijn, Event e, List<Event> events) {
+      Tram tram     = uithoflijn.Trams[e.Tram.Number];
+      int eventType = e.EventType;
+      LogEvent(e, tram);
 
       switch (eventType) {
         case 0: // departure
-          Console.WriteLine("{0} : Departure tram {1} at {2}",
-              eventt.DateTime, tram.Number, tram.Station.Number);
-          ScheduleArrival(eventt.DateTime, tram.Station, tram.Number, events);
+          Departure departure = new Departure(e.DateTime, tram.Station, tram);
+          departure.Schedule(events, uithoflijn);
           break;
         case 1: // arrival
-          Console.WriteLine("{0} : Arrival tram {1} at {2}",
-              eventt.DateTime, tram.Number, tram.Station.Number);
-
-          tram.Station = tram.Station.NextStation(uithoflijn.Stations);
-          ScheduleDeparture(eventt.DateTime, tram.Station, tram.Number, events);
+          Arrival arrival = new Arrival(e.DateTime, tram.Station, tram);
+          arrival.Schedule(events);
           break;
       }
     }
 
-    public void ScheduleArrival(DateTime cDT, Station cStation, int tramNr, List<Event> events) {
-      DateTime time = cDT.AddSeconds(30); // seconds till next station (traveltime)
-      events.Add(new Event(time, 1, tramNr));
-      events.OrderBy(e => e.DateTime).ToList();
-    }
-
-    public void ScheduleDeparture(DateTime cDT, Station cStation, int tramNr, List<Event> events) {
-      int dwellTime = CalculateDwellTime(cStation);
-      DateTime time = cDT.AddSeconds(dwellTime); // seconds for dwelltime
-      events.Add(new Event(time, 0, tramNr));
-      events.OrderBy(e => e.DateTime).ToList();
-    }
-
-    public int CalculateDwellTime(Station station) {
-      Console.WriteLine("{0} passengers at station: {1}", station.Passengers, station.Number);
-      return 30;
+    public void LogEvent(Event e, Tram tram) {
+      string eventText = "";
+      switch(e.EventType) {
+        case 0:
+          eventText = "Departure";
+          break;
+        case 1:
+          eventText = "Arrival";
+          break;
+      }
+      Console.WriteLine("{0} : {1} tram {2} at {3}", e.DateTime, eventText, tram.Number, tram.Station.Number);
     }
   }
 }
