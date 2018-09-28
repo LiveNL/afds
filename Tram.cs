@@ -5,12 +5,14 @@ namespace afds {
     public int Number { get; set; }
     public int Schedule { get; set; }
     public int Passengers { get; set; }
+    public Station Station { get; set; }
 
     public Tram(int i) {
       Number = i;
       Schedule = i;
       Passengers = i;
-      Console.WriteLine("New Tram #{0} created!", i);
+      Station = null;
+      // Console.WriteLine("New Tram #{0} created!", i);
     }
   }
 }

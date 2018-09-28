@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace afds {
   class Program {
@@ -9,12 +10,14 @@ namespace afds {
       State state           = new State();
       List<Event> events    = new List<Event>();
 
+      events.Add(new Event(DateTime.Parse("7:00:00 AM"), 0, 0));
+
       bool endCondition = false;
       while (endCondition == false) {
-        timingRoutine(uithoflijn, state, events);
-        eventRoutine(uithoflijn, state, events);
+        Event nextEvent = timingRoutine(uithoflijn, state, events);
+        eventRoutine(uithoflijn, state, nextEvent, events);
 
-        if (state.SimulationClock > DateTime.Parse("7:00:00 PM")) {
+        if (!events.Any() || state.SimulationClock > DateTime.Parse("7:00:00 PM")) {
           endCondition = true;
         };
       }
@@ -22,13 +25,16 @@ namespace afds {
       (new Report()).Print(uithoflijn, state);
     }
 
-    static void timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
-      Console.WriteLine(state.SimulationClock);
+    static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
+      Event nextEvent = events[0];
+      state.SimulationClock = nextEvent.DateTime;
+      events.RemoveAt(0);
+      return nextEvent;
     }
 
-    static void eventRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
-      uithoflijn.Update(uithoflijn, state);
-      Console.WriteLine(state.SimulationClock);
+    static void eventRoutine(Uithoflijn uithoflijn, State state, Event next, List<Event> events) {
+      // state.Update(uithoflijn);
+      uithoflijn.Update(uithoflijn, next, events);
     }
   }
 }

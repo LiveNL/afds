@@ -8,7 +8,7 @@ namespace afds {
     public Station(int i) {
       Number = i;
       Passengers = i;
-      Console.WriteLine("New Station #{0} created!", i);
+      // Console.WriteLine("New Station #{0} created!", i);
     }
   }
 }
