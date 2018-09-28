@@ -2,14 +2,10 @@ using System;
 
 namespace afds {
   public class State {
-    DateTime time;
-    public DateTime ProgramClock {
-      get { return this.time; }
-      set { this.time = value; }
+    public State() {
+      SimulationClock = DateTime.Parse("7:00:00 AM");
     }
 
-    public DateTime Time() {
-      return DateTime.Now;
-    }
+    public DateTime SimulationClock { get; set; }
   }
 }

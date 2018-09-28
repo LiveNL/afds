@@ -30,8 +30,8 @@ namespace afds {
       Trams = trams;
     }
 
-    public void Update(int station, DateTime arr, DateTime dep, State state) {
-      state.ProgramClock = arr;
+    public void Update(Uithoflijn uithoflijn, State state) {
+      state.SimulationClock = DateTime.Parse("7:00:01 PM");
     }
   }
 }
