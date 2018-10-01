@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace afds {
   class Program {
@@ -14,10 +15,13 @@ namespace afds {
 
       bool endCondition = false;
       while (endCondition == false) {
+        events = events.OrderBy(e => e.DateTime).ToList();
         Event nextEvent = timingRoutine(uithoflijn, state, events);
-        eventRoutine(uithoflijn, state, nextEvent, events);
 
-        if (!events.Any() || state.SimulationClock > DateTime.Parse("8:00:00 AM")) {
+        events = eventRoutine(uithoflijn, state, nextEvent, events);
+
+        // Check if loop/simulation should be ended
+        if (!events.Any() || state.SimulationClock > DateTime.Parse("7:30:00 AM")) {
           endCondition = true;
         };
       }
@@ -26,15 +30,23 @@ namespace afds {
     }
 
     static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
+//      foreach (Event eventt in events) {
+//        Console.WriteLine("{2} - {0}: {1}",
+//            eventt.Tram.Number, eventt.Tram.Station.Number, eventt.GetHashCode());
+//      }
+
       Event nextEvent = events[0];
       state.SimulationClock = nextEvent.DateTime;
       events.RemoveAt(0);
       return nextEvent;
     }
 
-    static void eventRoutine(Uithoflijn uithoflijn, State state, Event next, List<Event> events) {
+    static List<Event> eventRoutine(Uithoflijn uithoflijn, State state, Event next, List<Event> events) {
       // state.Update(uithoflijn);
-      uithoflijn.Update(uithoflijn, next, events);
+      // update statistical counters?
+
+      // generates future events
+      return uithoflijn.Update(uithoflijn, next, events);
     }
   }
 }

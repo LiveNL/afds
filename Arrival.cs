@@ -11,21 +11,21 @@ namespace afds {
 
     public Arrival(DateTime dt, Station station, Tram tram) {
       DateTime = dt;
-      Station = station;
+      Station = station; // NOTE: not needed?
       Tram = tram;
     }
 
-    public void Schedule(List<Event> events) {
+    public List<Event> ScheduleDeparture(List<Event> events) {
       events.Add(NewDepartureEvent());
-      events.OrderBy(e => e.DateTime).ToList();
-    }
-
-    public DateTime TimeAfterDwellTime() {
-      return this.DateTime.AddSeconds(240);
+      return events;
     }
 
     public Event NewDepartureEvent() {
       return new Event(TimeAfterDwellTime(), DepartureEventType, Tram);
+    }
+
+    public DateTime TimeAfterDwellTime() {
+      return this.DateTime.AddSeconds(240);
     }
   }
 }

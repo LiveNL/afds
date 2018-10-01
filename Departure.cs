@@ -15,18 +15,26 @@ namespace afds {
       Tram = tram;
     }
 
-    public void Schedule(List<Event> events, Uithoflijn uithoflijn) {
-      events.Add(NewArrivalEvent(uithoflijn));
-      events.OrderBy(e => e.DateTime).ToList();
+    public List<Event> ScheduleNewDeparture(List<Event> events, Uithoflijn uithoflijn) {
+      if (Tram.Station.Number == 0) {
+        events.Add(new Event(this.DateTime.AddSeconds(900), 0, Tram.NextTram(uithoflijn.Trams)));
+      }
+
+      return events;
     }
 
-    public DateTime TimeAfterTravelTime() {
-      return this.DateTime.AddSeconds(135);
+    public List<Event> ScheduleArrival(List<Event> events, Uithoflijn uithoflijn) {
+      events.Add(NewArrivalEvent(uithoflijn));
+      return events;
     }
 
     public Event NewArrivalEvent(Uithoflijn uithoflijn) {
       Tram.Station = Tram.Station.NextStation(uithoflijn.Stations);
       return new Event(TimeAfterTravelTime(), ArrivalEventType, Tram);
+    }
+
+    public DateTime TimeAfterTravelTime() {
+      return this.DateTime.AddSeconds(135);
     }
   }
 }

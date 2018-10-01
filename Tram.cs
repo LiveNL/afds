@@ -13,5 +13,12 @@ namespace afds {
       Passengers = i;
       Station = station;
     }
+
+    public Tram NextTram(Tram[] trams) {
+      int next = this.Number + 1;
+
+      if (next < 13) { next = next; } else { next = 0; };
+      return trams[next];
+    }
   }
 }
