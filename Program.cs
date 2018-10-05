@@ -11,7 +11,10 @@ namespace afds {
       State state           = new State();
       List<Event> events    = new List<Event>();
 
-      events.Add(new Event(DateTime.Parse("7:00:00 AM"), 0, uithoflijn.Trams[0]));
+      Tram firstTram = uithoflijn.Trams[0];
+      firstTram.Station = uithoflijn.Stations[0];
+
+      events.Add(new Event(DateTime.Parse("7:00:00 AM"), 0, firstTram));
 
       bool endCondition = false;
       while (endCondition == false) {
@@ -21,7 +24,7 @@ namespace afds {
         events = eventRoutine(uithoflijn, state, nextEvent, events);
 
         // Check if loop/simulation should be ended
-        if (!events.Any() || state.SimulationClock > DateTime.Parse("7:30:00 AM")) {
+        if (!events.Any() || state.SimulationClock > DateTime.Parse("11:00:00 AM")) {
           endCondition = true;
         };
       }
@@ -30,11 +33,6 @@ namespace afds {
     }
 
     static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
-//      foreach (Event eventt in events) {
-//        Console.WriteLine("{2} - {0}: {1}",
-//            eventt.Tram.Number, eventt.Tram.Station.Number, eventt.GetHashCode());
-//      }
-
       Event nextEvent = events[0];
       state.SimulationClock = nextEvent.DateTime;
       events.RemoveAt(0);
@@ -47,6 +45,13 @@ namespace afds {
 
       // generates future events
       return uithoflijn.Update(uithoflijn, next, events);
+    }
+
+    static void LogEvents(List<Event> events) {
+      foreach (Event eventt in events) {
+        Console.WriteLine("{2} - {0}: {1}",
+            eventt.Tram.Number, eventt.Tram.Station.Number, eventt.GetHashCode());
+      }
     }
   }
 }

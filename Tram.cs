@@ -17,7 +17,7 @@ namespace afds {
     public Tram NextTram(Tram[] trams) {
       int next = this.Number + 1;
 
-      if (next < 13) { next = next; } else { next = 0; };
+      if (next >= trams.Length) { next = 0; };
       return trams[next];
     }
   }

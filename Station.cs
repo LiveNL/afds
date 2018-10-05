@@ -13,7 +13,7 @@ namespace afds {
     public Station NextStation(Station[] stations) {
       int next = this.Number + 1;
 
-      if (next < 18) { next = next; } else { next = 0; };
+      if (next >= stations.Length) { next = 0; };
       return stations[next];
     }
   }

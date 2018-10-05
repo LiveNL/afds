@@ -16,8 +16,11 @@ namespace afds {
     }
 
     public List<Event> ScheduleNewDeparture(List<Event> events, Uithoflijn uithoflijn) {
-      if (Tram.Station.Number == 0) {
-        events.Add(new Event(this.DateTime.AddSeconds(900), 0, Tram.NextTram(uithoflijn.Trams)));
+      Tram nextTram = Tram.NextTram(uithoflijn.Trams);
+
+      if (Tram.Station.Number == 0 && nextTram.Station == null) {
+        nextTram.Station = uithoflijn.Stations[0];
+        events.Add(new Event(this.DateTime.AddSeconds(900), 0, nextTram));
       }
 
       return events;

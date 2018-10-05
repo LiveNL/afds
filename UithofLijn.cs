@@ -4,17 +4,20 @@ using System.Linq;
 
 namespace afds {
   public class Uithoflijn {
+    // there are 9 stations, with two sides, therefore 18 are created
+    public int STATIONS = 18;
+    public int TRAMS = 13;
+
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
 
     public Uithoflijn() {
-      // there are 9 stations, with two sides, therefore 18 are created
-      Station[] stations = new Station[18];
-      for (int i = 0; i < 18; i++) { stations[i] = new Station(i); }
+      Station[] stations = new Station[STATIONS];
+      for (int i = 0; i < STATIONS; i++) { stations[i] = new Station(i); }
       Stations = stations;
 
-      Tram[] trams = new Tram[13];
-      for (int i = 0; i <= 12; i++) { trams[i] = new Tram(i, stations[0]); }
+      Tram[] trams = new Tram[TRAMS];
+      for (int i = 0; i < TRAMS; i++) { trams[i] = new Tram(i, null); }
       Trams = trams;
 
       Console.WriteLine("New UithofLijn created!");
