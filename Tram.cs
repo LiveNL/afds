@@ -10,8 +10,12 @@ namespace afds {
     public Tram(int i, Station station) {
       Number = i;
       Schedule = i;
-      Passengers = i;
+      Passengers = 0;
       Station = station;
+    }
+
+    public void InAndOut() {
+      Passengers = Passengers + Station.Passengers;
     }
 
     public Tram NextTram(Tram[] trams) {

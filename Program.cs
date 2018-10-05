@@ -24,7 +24,7 @@ namespace afds {
         events = eventRoutine(uithoflijn, state, nextEvent, events);
 
         // Check if loop/simulation should be ended
-        if (!events.Any() || state.SimulationClock > DateTime.Parse("11:00:00 AM")) {
+        if (!events.Any() || state.SimulationClock > DateTime.Parse("10:00:00 AM")) {
           endCondition = true;
         };
       }

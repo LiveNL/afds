@@ -7,7 +7,7 @@ namespace afds {
 
     public Station(int i) {
       Number = i;
-      Passengers = i;
+      Passengers = 10;
     }
 
     public Station NextStation(Station[] stations) {

@@ -6,7 +6,7 @@ namespace afds {
   public class Uithoflijn {
     // there are 9 stations, with two sides, therefore 18 are created
     public int STATIONS = 18;
-    public int TRAMS = 13;
+    public int TRAMS = 2;    // 13
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -31,7 +31,8 @@ namespace afds {
     public List<Event> Update(Uithoflijn uithoflijn, Event e, List<Event> events) {
       Tram tram     = uithoflijn.Trams[e.Tram.Number];
       int eventType = e.EventType;
-      LogEvent(e, tram);
+      // LogEvent(e, tram);
+      LogTramPassengers(tram);
 
       switch (eventType) {
         case 0: // departure
@@ -40,6 +41,7 @@ namespace afds {
           return departure.ScheduleArrival(events, uithoflijn);
         case 1: // arrival
           Arrival arrival = new Arrival(e.DateTime, tram.Station, tram);
+          arrival.Tram.InAndOut();
           return arrival.ScheduleDeparture(events);
       }
       return events;
@@ -56,6 +58,10 @@ namespace afds {
           break;
       }
       Console.WriteLine("{0} : {1} tram {2} at {3}", e.DateTime, eventText, tram.Number, tram.Station.Number);
+    }
+
+    public void LogTramPassengers(Tram tram) {
+      Console.WriteLine("tram {0} : {1} people", tram.Number, tram.Passengers);
     }
   }
 }
