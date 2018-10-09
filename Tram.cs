@@ -15,7 +15,9 @@ namespace afds {
     }
 
     public void InAndOut() {
-      Passengers = Passengers + Station.Passengers;
+      int current = Passengers; // Needs to change to some that get out
+      int extra   = Station.Passengers;
+      Passengers = current + extra; // Needs to be capped at 420
     }
 
     public Tram NextTram(Tram[] trams) {
