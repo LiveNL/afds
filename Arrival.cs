@@ -9,8 +9,8 @@ namespace afds {
     public Tram Tram { get; set; }
     public int DepartureEventType = 0;
 
-    public Arrival(DateTime dt, Station station, Tram tram) {
-      DateTime = dt;
+    public Arrival(Event e, Station station, Tram tram) {
+      DateTime = e.DateTime;
       Station = station; // NOTE: not needed?
       Tram = tram;
     }

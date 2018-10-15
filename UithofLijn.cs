@@ -32,16 +32,22 @@ namespace afds {
       Tram tram     = uithoflijn.Trams[e.Tram.Number];
       int eventType = e.EventType;
       // LogEvent(e, tram);
-      LogTramPassengers(tram);
 
       switch (eventType) {
         case 0: // departure
+          // LogTramPassengers(tram);
+
           Departure departure = new Departure(e.DateTime, tram.Station, tram);
+          departure.Station.LastDepartureEvent = e;
+
           events = departure.ScheduleNewDeparture(events, uithoflijn);
           return departure.ScheduleArrival(events, uithoflijn);
         case 1: // arrival
-          Arrival arrival = new Arrival(e.DateTime, tram.Station, tram);
+          Arrival arrival = new Arrival(e, tram.Station, tram);
+          arrival.Station.LastArrivalEvent = e;
+
           arrival.Tram.InAndOut();
+          // arrival.Tram.SecondInAndOut();
           return arrival.ScheduleDeparture(events);
       }
       return events;
