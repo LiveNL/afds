@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using MathNet.Numerics.Random;
 
-namespace Probabilities
-{
-    class Program
-    {
+namespace afds {
+    public class Probabilities {
         //Declaring global variables.
         private static MersenneTwister random;
         static int[] runtimes_a;
@@ -19,26 +17,25 @@ namespace Probabilities
         public static Dictionary<string, double[]> Rates_a { get => rates_a; set => rates_a = value; }
         public static Dictionary<string, double[]> Rates_b { get => rates_b; set => rates_b = value; }
 
-        static void Main(string[] args)
+
+        public static void InitProbabilities()
         {
             //Initializing global variables.
             random = new MersenneTwister(12);
             Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135 };
             Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113 };
-            const string Filepath = "C:/Users/thoma/Documents/ADS/Probabilities/Data/rates_a.csv";
+            const string Filepath = "./rates_a.csv";
             Rates_a = ReadCsv(Filepath);
-            const string Filepath1 = "C:/Users/thoma/Documents/ADS/Probabilities/Data/rates_b.csv";
+            const string Filepath1 = "./rates_b.csv";
             Rates_b = ReadCsv(Filepath1);
 
-            while (true)
-            {
-                //Statements for testing.
-                DateTime begin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
-                DateTime end = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 0, 0);
-                Console.WriteLine(GeneratePassengerArrivals(begin, end, rates_b["CS Centrumzijde"]));
-                System.Threading.Thread.Sleep(100);
-            }
-            Console.ReadKey();
+            //Statements for testing.
+            // while (true) {
+            //     DateTime begin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
+            //     DateTime end = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 0, 0);
+            //     Console.WriteLine(GeneratePassengerArrivals(begin, end, rates_b["CS Centrumzijde"]));
+            //     System.Threading.Thread.Sleep(1);
+            // }
         }
 
         //The functions that are directly called in the simulation.
@@ -65,7 +62,7 @@ namespace Probabilities
             else return (int)gamma;
         }
 
-        static int GeneratePassengerArrivals(DateTime begin, DateTime end, double[] rates)
+        public static int GeneratePassengerArrivals(DateTime begin, DateTime end, double[] rates)
         {
             int res = 0;
             int begin_i = TimeToIndex(begin);
@@ -172,7 +169,8 @@ namespace Probabilities
                     var values = line.Split(';');
                     for (int i = 1; i < values.Length; i++)
                     {
-                        res[names[i]][n] = double.Parse(values[i]);
+                        // NOTE: On some systems the comma might work instead of the replacement with dot
+                        res[names[i]][n] = double.Parse(values[i].Replace(',', '.'));
                     }
                     n++;
                 }

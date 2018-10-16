@@ -20,7 +20,9 @@ namespace afds {
 
       if (Tram.Station.Number == 0 && nextTram.Station == null) {
         nextTram.Station = uithoflijn.Stations[0];
-        events.Add(new Event(this.DateTime.AddSeconds(900), 0, nextTram));
+        // TODO: maybe set this on 0, such that it is an departure instead of arrival,
+        // in this way it just makes it possible to gain passengers at the beginning
+        events.Add(new Event(this.DateTime.AddSeconds(900), 1, nextTram));
       }
 
       return events;
