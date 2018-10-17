@@ -22,8 +22,8 @@ namespace afds {
         {
             //Initializing global variables.
             random = new MersenneTwister(12);
-            Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135 };
-            Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113 };
+            Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135, 666 }; // TODO: fix extra station (as the bus has only 12)
+            Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113, 666 }; // TODO: fix extra station (as the bus has only 12)
             const string Filepath = "./rates_a.csv";
             Rates_a = ReadCsv(Filepath);
             const string Filepath1 = "./rates_b.csv";
@@ -39,7 +39,7 @@ namespace afds {
         }
 
         //The functions that are directly called in the simulation.
-        static int CalcRunTime(int mean)
+        public static int CalcRunTime(int mean)
         {
             double stdev = 0.0909186 - 0.0001444 * mean;
             return (int)CalcLogNormal(Math.Log((double)mean), stdev);

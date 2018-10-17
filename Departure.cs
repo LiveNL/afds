@@ -39,7 +39,15 @@ namespace afds {
     }
 
     public DateTime TimeAfterTravelTime() {
-      return this.DateTime.AddSeconds(135);
+      return this.DateTime.AddSeconds(TravelTime());
+    }
+
+    public int TravelTime() {
+      if (Station.Number < 9) {
+        return Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number]);
+      } else {
+        return Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
+      }
     }
   }
 }

@@ -46,6 +46,7 @@ namespace afds {
       if (nr < 9) {
         return Probabilities.Rates_a[stationName];
       } else {
+        // NOTE: Check if the mapping works as expected;
         return Probabilities.Rates_b[stationName];
       }
     }
