@@ -41,7 +41,8 @@ namespace afds {
         //The functions that are directly called in the simulation.
         static int CalcRunTime(int mean)
         {
-            return (int)CalcLogNormal(Math.Log((double)mean), 0.321 * ((double)mean - 49.38125) / (49.38125 + 143.13026));
+            double stdev = 0.0909186 - 0.0001444 * mean;
+            return (int)CalcLogNormal(Math.Log((double)mean), stdev);
         }
 
         static int CalcDwellingTime(int passengers_in, int passengers_out)
