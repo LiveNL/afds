@@ -14,7 +14,7 @@ namespace afds {
 
       Tram firstTram = uithoflijn.Trams[0];
       firstTram.Station = uithoflijn.Stations[0];
-      // This maybe needs to be an arrival event? How many people are then at the station?
+      // NOTE: This maybe needs to be an arrival event? How many people are then at the station?
       events.Add(new Event(DateTime.Parse("7:00:00 AM"), 1, firstTram));
 
       bool endCondition = false;
@@ -41,8 +41,7 @@ namespace afds {
     }
 
     static List<Event> eventRoutine(Uithoflijn uithoflijn, State state, Event next, List<Event> events) {
-      // state.Update(uithoflijn);
-      // update statistical counters?
+      // TODO: state.Update(uithoflijn);
 
       // generates future events
       return uithoflijn.Update(uithoflijn, next, events);

@@ -52,7 +52,7 @@ namespace afds {
 
     public void LogWaitingPeople(int p, DateTime then) {
       Console.WriteLine(
-        "Then: {0} | Now: {1} | passengers: {2,-3} | Station: {3,-20} | Tram: {4}",
+        "Then: {0} | Now: {1} | passengers: {2,-4} | Station: {3,-20} | Tram: {4}",
         then.TimeOfDay, LastArrivalEvent.DateTime.TimeOfDay, p,
         StationDict()[Number], LastArrivalEvent.Tram.Number
       );
