@@ -25,7 +25,11 @@ namespace afds {
     }
 
     public DateTime TimeAfterDwellTime() {
-      return this.DateTime.AddSeconds(240);
+      return this.DateTime.AddSeconds(DwellTime());
+    }
+
+    public int DwellTime() {
+      return Probabilities.CalcDwellingTime(Tram.PassengersIn(), Tram.PassengersOut());
     }
   }
 }

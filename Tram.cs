@@ -14,10 +14,18 @@ namespace afds {
       Station = station;
     }
 
-    public void InAndOut() {
-      int current = Passengers;       // - Out.   Needs to change to some that get out
+    public int PassengersIn() {
+      // Passengers needs to be capped at 420
       int waiting = Station.WaitingPeople();
-      Passengers = current + waiting; // + extra. Needs to be capped at 420
+      Passengers = Passengers + waiting;
+      return waiting;
+    }
+
+    public int PassengersOut() {
+      // Passengers needs to be capped at 420
+      int wantOut = 0;
+      Passengers = Passengers - wantOut;
+      return wantOut; // TODO: No clue yet
     }
 
     public Tram NextTram(Tram[] trams) {

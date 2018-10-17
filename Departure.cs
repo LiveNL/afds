@@ -15,7 +15,7 @@ namespace afds {
       Tram = tram;
     }
 
-    public List<Event> ScheduleNewDeparture(List<Event> events, Uithoflijn uithoflijn) {
+    public List<Event> ScheduleNewTram(List<Event> events, Uithoflijn uithoflijn) {
       Tram nextTram = Tram.NextTram(uithoflijn.Trams);
 
       if (Tram.Station.Number == 0 && nextTram.Station == null) {

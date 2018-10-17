@@ -41,13 +41,13 @@ namespace afds {
           Departure departure = new Departure(e.DateTime, tram.Station, tram);
           departure.Station.LastDepartureEvent = e;
 
-          events = departure.ScheduleNewDeparture(events, uithoflijn);
+          // TODO: configure this based on schedule (7.00-9.00 : 15, after: max)
+          events = departure.ScheduleNewTram(events, uithoflijn);
           return departure.ScheduleArrival(events, uithoflijn);
         case 1: // arrival
           Arrival arrival = new Arrival(e, tram.Station, tram);
           arrival.Station.LastArrivalEvent = e;
 
-          arrival.Tram.InAndOut();
           // TODO: arrival.Tram.SecondInAndOut();
           return arrival.ScheduleDeparture(events);
       }
