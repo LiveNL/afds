@@ -4,9 +4,10 @@ using System.Linq;
 
 namespace afds {
   public class Uithoflijn {
-    // there are 9 stations, with two sides, therefore 18 are created
+    // There are 9 stations, with two sides, therefore 18 are created
+    // Next to that there are 27 trams (atm), 13 double ones, 1 stand-by
     public int STATIONS = 18;
-    public int TRAMS = 2;    // 13
+    public int TRAMS = 13;
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -63,7 +64,8 @@ namespace afds {
           eventText = "Arrival";
           break;
       }
-      Console.WriteLine("{0} : {1} tram {2} at {3}", e.DateTime, eventText, tram.Number, tram.Station.Number);
+      Console.WriteLine("{0} : {1} tram {2} at {3}",
+        e.DateTime, eventText, tram.Number, tram.Station.Number);
     }
 
     public void LogTramPassengers(Tram tram) {
