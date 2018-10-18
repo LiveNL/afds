@@ -41,12 +41,15 @@ namespace afds {
       if (Station.NextStation(uithoflijn.Stations).Tram == null) {
         events.Add(newEvent);
       } else if (prevTram.ExpectedDeparture < expectedArrivalplus40sec) {
+        // TODO: FIX THIS CONDITIONAL
         events.Add(newEvent);
-      } // else {
-       //  double diff = (prevTram.ExpectedDeparture - expectedArrival).TotalSeconds;
-       //  LogToCloseTram(travelTime, prevTram, expectedArrival, nextStation, diff);
-       //  newEvent.DateTime = newEvent.DateTime.AddSeconds(diff + 1);
-       //  events.Add(newEvent);
+      }
+
+      // else {
+      //  double diff = (prevTram.ExpectedDeparture - expectedArrival).TotalSeconds;
+      //  LogToCloseTram(travelTime, prevTram, expectedArrival, nextStation, diff);
+      //  newEvent.DateTime = newEvent.DateTime.AddSeconds(diff + 1);
+      //  events.Add(newEvent);
       // }
 
       // if (prevTram.Station?.Number == nextStation) {

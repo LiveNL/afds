@@ -59,7 +59,7 @@ namespace afds {
         case 1:
           eventText = "Arrivl"; break;
       }
-      Console.WriteLine("{0} : {1} tram {2} at {3,-2} : {4}",
+      Console.WriteLine("{0} : {1} tram {2,-2} at {3,-2} : {4}",
         e.DateTime, eventText, tram.Number, tram.Station.Number, tram.Station.StationDict()[tram.Station.Number]);
     }
 
