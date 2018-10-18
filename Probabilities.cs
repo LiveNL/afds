@@ -133,15 +133,15 @@ namespace afds {
         //Other support functions used.
         static int TimeToIndex(DateTime time)
         {
-            //07:00-07:14 -> 0
-            //07:15-07:29 -> 1
+            //06:00-06:14 -> 0
+            //06:15-06:29 -> 1
             //...
-            //18:45-18:59 -> 47
-            //exception: 19:00 -> 47
+            //21:15-21:29 -> 61
+            //exception: 21:30 -> 61
             DateTime quarter = time.AddMinutes(-(time.Minute % 15));
-            TimeSpan diff = quarter - new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
+            TimeSpan diff = quarter - new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 6, 0, 0);
             int res = (int)diff.TotalMinutes / 15;
-            return res >= 47 ? 47 : res;
+            return res >= 61 ? 61 : res;
         }
 
         static Dictionary<string, double[]> ReadCsv(string filepath)
