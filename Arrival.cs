@@ -11,7 +11,7 @@ namespace afds {
 
     public Arrival(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
-      Station = station; // NOTE: not needed?
+      Station = station;
       Tram = tram;
     }
 
@@ -25,11 +25,21 @@ namespace afds {
     }
 
     public DateTime TimeAfterDwellTime() {
-      return this.DateTime.AddSeconds(DwellTime());
+      // NOTE: do we need 'this'?
+      DateTime expectedDeparture = this.DateTime.AddSeconds(DwellTime());
+      Tram.ExpectedDeparture = expectedDeparture;
+      return expectedDeparture;
     }
 
     public int DwellTime() {
-      return Probabilities.CalcDwellingTime(Tram.PassengersIn(), Tram.PassengersOut());
+      int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(), Tram.PassengersOut());
+      // LogDwellTime(dwellTime);
+      return dwellTime;
+    }
+
+    public void LogDwellTime(int i) {
+      Console.WriteLine("{0} : Dwelltime {1} sec tram {2} at {3}",
+        DateTime, i, Tram.Number, Station.Number);
     }
   }
 }

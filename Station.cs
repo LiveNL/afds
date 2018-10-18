@@ -18,6 +18,7 @@ namespace afds {
     public Station NextStation(Station[] stations) {
       int next = this.Number + 1;
 
+      // TODO: Change this to go back after 9
       if (next >= stations.Length) { next = 0; };
       return stations[next];
     }
@@ -37,7 +38,7 @@ namespace afds {
       } else { return 0; }
 
       int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
-      LogWaitingPeople(p, then);
+      // LogWaitingPeople(p, then);
       return p;
     }
 

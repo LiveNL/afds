@@ -7,7 +7,7 @@ namespace afds {
     // There are 9 stations, with two sides, therefore 18 are created
     // Next to that there are 27 trams (atm), 13 double ones, 1 stand-by
     public int STATIONS = 18;
-    public int TRAMS = 1;
+    public int TRAMS = 4;
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -32,7 +32,9 @@ namespace afds {
     public List<Event> Update(Uithoflijn uithoflijn, Event e, List<Event> events) {
       Tram tram     = uithoflijn.Trams[e.Tram.Number];
       int eventType = e.EventType;
-      // LogEvent(e, tram);
+      LogEvent(e, tram);
+
+      // TODO: check if order of trams still is in place? Just for debugging reasons.
 
       switch (eventType) {
         case 0: // departure
@@ -58,10 +60,10 @@ namespace afds {
       string eventText = "";
       switch(e.EventType) {
         case 0:
-          eventText = "Departure";
+          eventText = "Depart";
           break;
         case 1:
-          eventText = "Arrival";
+          eventText = "Arrivl";
           break;
       }
       Console.WriteLine("{0} : {1} tram {2} at {3}",

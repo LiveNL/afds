@@ -29,7 +29,19 @@ namespace afds {
     }
 
     public List<Event> ScheduleArrival(List<Event> events, Uithoflijn uithoflijn) {
-      events.Add(NewArrivalEvent(uithoflijn));
+      Tram prevTram = Tram.PrevTram(uithoflijn.Trams);
+
+      if (prevTram.Station?.Number == Station.NextStation(uithoflijn.Stations).Number) {
+        if (prevTram.ExpectedDeparture.AddSeconds(-TravelTime()) > DateTime.AddSeconds(40)) {
+          events.Add(NewArrivalEvent(uithoflijn));
+        } else {
+          LogToCloseTram(uithoflijn);
+        }
+      } else {
+        // NOTE: might be the case that tram is still to close,
+        // even when the tram is past the next station, need to check this
+        events.Add(NewArrivalEvent(uithoflijn));
+      }
       return events;
     }
 
@@ -43,11 +55,28 @@ namespace afds {
     }
 
     public int TravelTime() {
+      // TODO: check if this is always the same for each call within this class
+      int travelTime;
       if (Station.Number < 9) {
-        return Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number]);
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number]);
       } else {
-        return Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
       }
+
+      LogTravelTime(travelTime);
+      return travelTime;
+    }
+
+    public void LogToCloseTram(Uithoflijn uithoflijn) {
+      Tram prevTram = Tram.PrevTram(uithoflijn.Trams);
+      Console.WriteLine("Tram: {0} is to close to prevTram {1}" +
+                        "at prevTram.Station.Number {2} and Station.Number {3}",
+        Tram.Number, prevTram.Number, prevTram.Station.Number, Station.Number);
+    }
+
+    public void LogTravelTime(int i) {
+      Console.WriteLine("{0} : Travel {1} sec tram {2} at {3}",
+        DateTime, i, Tram.Number, Station.Number);
     }
   }
 }

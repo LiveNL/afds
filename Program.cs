@@ -26,11 +26,12 @@ namespace afds {
 
         // Check if loop/simulation should be ended
         if (!events.Any() || state.SimulationClock > DateTime.Parse("6:59:59 PM")) {
+        // if (!events.Any() || state.SimulationClock > DateTime.Parse("7:30:00 AM")) {
           endCondition = true;
         };
       }
 
-      (new Report()).Print(uithoflijn, state);
+      // (new Report()).Print(uithoflijn, state);
     }
 
     static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
