@@ -44,9 +44,9 @@ namespace afds {
     public double[] Rates(int nr) {
       string stationName = StationDict()[nr];
       if (nr < 9) {
-        return Probabilities.Rates_b[stationName];
-      } else {
         return Probabilities.Rates_a[stationName];
+      } else {
+        return Probabilities.Rates_b[stationName];
       }
     }
 
@@ -59,18 +59,16 @@ namespace afds {
     }
 
     public Dictionary<int, string> StationDict() {
-      // TODO: Just add this to the place where csvs are read
-      // TODO: Correct order of stations (csv is different from logic order)
       var map = new Dictionary<int, string>();
-      map.Add(0, "CS Centrumzijde");     map.Add(17, "CS Centrumzijde");
-      map.Add(1, "Bleekstraat");         map.Add(16, "Bleekstraat");
-      map.Add(2, "Sterrenwijk");         map.Add(15, "Sterrenwijk");
-      map.Add(3, "Rubenslaan");          map.Add(14, "Rubenslaan");
-      map.Add(4, "Stadion Galgenwaard"); map.Add(13, "Stadion Galgenwaard");
-      map.Add(5, "De Kromme Rijn");      map.Add(12, "De Kromme Rijn");
-      map.Add(6, "Padualaan");           map.Add(11, "Padualaan");
-      map.Add(7, "Heidelberglaan");      map.Add(10, "Heidelberglaan");
-      map.Add(8, "AZU");                 map.Add(9,  "AZU");
+      map.Add(0, "P+R De Uithof");    map.Add(17, "P+R De Uithof");
+      map.Add(1, "WKZ");              map.Add(16, "WKZ");
+      map.Add(2, "UMC");              map.Add(15, "UMC");
+      map.Add(3, "Heidelberglaan");   map.Add(14, "Heidelberglaan");
+      map.Add(4, "Padualaan");        map.Add(13, "Padualaan");
+      map.Add(5, "Kromme Rijn");      map.Add(12, "Kromme Rijn");
+      map.Add(6, "Galgenwaard");      map.Add(11, "Galgenwaard");
+      map.Add(7, "Vaartsche Rijn");   map.Add(10, "Vaartsche Rijn");
+      map.Add(8, "Centraal Station"); map.Add(9,  "Centraal Station");
       return map;
     }
   }

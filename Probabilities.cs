@@ -155,7 +155,7 @@ namespace afds {
                 var names = first_line.Split(';');
                 for (int i = 1; i < names.Length; i++)
                 {
-                    res.Add(names[i], new double[48]);
+                    res.Add(names[i], new double[62]);
                 }
                 int n = 0;
                 while (!reader.EndOfStream)
@@ -164,8 +164,7 @@ namespace afds {
                     var values = line.Split(';');
                     for (int i = 1; i < values.Length; i++)
                     {
-                        // NOTE: On some systems the comma might work instead of the replacement with dot
-                        res[names[i]][n] = double.Parse(values[i].Replace(',', '.'));
+                        res[names[i]][n] = double.Parse(values[i]);
                     }
                     n++;
                 }

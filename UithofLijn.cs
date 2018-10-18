@@ -7,7 +7,7 @@ namespace afds {
     // There are 9 stations, with two sides, therefore 18 are created
     // Next to that there are 27 trams (atm), 13 double ones, 1 stand-by
     public int STATIONS = 18;
-    public int TRAMS = 4;
+    public int TRAMS = 1;
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -64,8 +64,8 @@ namespace afds {
         case 1:
           eventText = "Arrivl"; break;
       }
-      Console.WriteLine("{0} : {1} tram {2} at {3}",
-        e.DateTime, eventText, tram.Number, tram.Station.StationDict()[tram.Station.Number]);
+      Console.WriteLine("{0} : {1} tram {2} at {3,-2} : {4}",
+        e.DateTime, eventText, tram.Number, tram.Station.Number, tram.Station.StationDict()[tram.Station.Number]);
     }
 
     public void LogTramPassengers(Tram tram) {

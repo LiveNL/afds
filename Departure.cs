@@ -8,6 +8,7 @@ namespace afds {
     public Station Station { get; set; }
     public Tram Tram { get; set; }
     public int ArrivalEventType = 1;
+    public int Q = 300;
 
     public Departure(DateTime dt, Station station, Tram tram) {
       DateTime = dt;
@@ -54,15 +55,17 @@ namespace afds {
       return this.DateTime.AddSeconds(TravelTime());
     }
 
+    // TODO: check if this is always the same for each call within this class
+    // as it's called multiple times
     public int TravelTime() {
-      // TODO: check if this is always the same for each call within this class
       int travelTime;
-      if (Station.Number < 9) {
-        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number]);
+      if (Station.Number < 8) {
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number]);
+      } else if (Station.Number == 8 || Station.Number == 17){
+        travelTime = Q; // TODO: vary this Q
       } else {
-        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number - 9]);
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
       }
-
       // LogTravelTime(travelTime);
       return travelTime;
     }
