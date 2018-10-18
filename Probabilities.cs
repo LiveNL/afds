@@ -29,14 +29,6 @@ namespace afds {
             Rates_a = ReadCsv(Filepath);
             const string Filepath1 = "./rates_b.csv";
             Rates_b = ReadCsv(Filepath1);
-
-            //Statements for testing.
-            // while (true) {
-            //     DateTime begin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
-            //     DateTime end = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 0, 0);
-            //     Console.WriteLine(GeneratePassengerArrivals(begin, end, rates_b["CS Centrumzijde"]));
-            //     System.Threading.Thread.Sleep(1);
-            // }
         }
 
         //The functions that are directly called in the simulation.
@@ -50,7 +42,7 @@ namespace afds {
         {
             double mean = 12.5 + 0.22 * passengers_in + 0.13 * passengers_out;
             double min = 0.8 * mean;
-            double gamma = GenerateGammaValue(2, mean);
+            double gamma = GenerateGammaValue(2, mean / 2);
             if (gamma < min) return (int)min;
             else return (int)gamma;
         }
@@ -59,7 +51,7 @@ namespace afds {
         {
             double mean = 0.22 * passengers_in;
             double min = 0.8 * mean;
-            double gamma = GenerateGammaValue(2, mean);
+            double gamma = GenerateGammaValue(2, mean / 2);
             if (gamma < min) return (int)min;
             else return (int)gamma;
         }
