@@ -7,18 +7,18 @@ namespace afds {
     public int   Passengers         { get; set; }
     public Event LastDepartureEvent { get; set; }
     public Event LastArrivalEvent   { get; set; }
+    public Tram  Tram               { get; set; }
 
     public Station(int i) {
-      Number = i;
-      Passengers = 0;
+      Number             = i;
+      Passengers         = 0;
       LastDepartureEvent = null;
-      LastArrivalEvent = null;
+      LastArrivalEvent   = null;
+      Tram               = null;
     }
 
     public Station NextStation(Station[] stations) {
       int next = this.Number + 1;
-
-      // TODO: Change this to go back after 9
       if (next >= stations.Length) { next = 0; };
       return stations[next];
     }

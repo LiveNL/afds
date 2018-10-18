@@ -9,8 +9,8 @@ namespace afds {
     public Tram     Tram     { get; set; }
 
     public int ArrivalEventType = 1;
-    public int Q                = 300; // TODO: vary this Q
-    public int Interval         = 240; // TODO: vary this Interval
+    public int Q                = 180; // TODO: vary this Q
+    public int Interval         = 180; // TODO: vary this Interval
 
     public Departure(DateTime dt, Station station, Tram tram) {
       DateTime = dt;
@@ -38,19 +38,30 @@ namespace afds {
       DateTime expectedArrivalplus40sec = expectedArrival.AddSeconds(40);
       int nextStation = Station.NextStation(uithoflijn.Stations).Number;
 
-      if (prevTram.Station?.Number == nextStation) {
-        if (prevTram.ExpectedDeparture < expectedArrivalplus40sec) {
-          events.Add(newEvent);
-        } else {
-          double diff = (prevTram.ExpectedDeparture - expectedArrival).TotalSeconds;
-          LogToCloseTram(travelTime, prevTram, expectedArrival, nextStation, diff);
-          newEvent.DateTime = newEvent.DateTime.AddSeconds(diff + 1);
-          events.Add(newEvent);
-        }
-      } else {
-        // TODO: prevTram is past nextStation, but could still be to close
+      if (Station.NextStation(uithoflijn.Stations).Tram == null) {
         events.Add(newEvent);
-      }
+      } else if (prevTram.ExpectedDeparture < expectedArrivalplus40sec) {
+        events.Add(newEvent);
+      } // else {
+       //  double diff = (prevTram.ExpectedDeparture - expectedArrival).TotalSeconds;
+       //  LogToCloseTram(travelTime, prevTram, expectedArrival, nextStation, diff);
+       //  newEvent.DateTime = newEvent.DateTime.AddSeconds(diff + 1);
+       //  events.Add(newEvent);
+      // }
+
+      // if (prevTram.Station?.Number == nextStation) {
+      //   if (prevTram.ExpectedDeparture < expectedArrivalplus40sec) {
+      //     events.Add(newEvent);
+      //   } else {
+      //     double diff = (prevTram.ExpectedDeparture - expectedArrival).TotalSeconds;
+      //     LogToCloseTram(travelTime, prevTram, expectedArrival, nextStation, diff);
+      //     newEvent.DateTime = newEvent.DateTime.AddSeconds(diff + 1);
+      //     events.Add(newEvent);
+      //   }
+      // } else {
+      //   // TODO: prevTram is past nextStation, but could still be to close
+      //   events.Add(newEvent);
+      // }
       return events;
     }
 
