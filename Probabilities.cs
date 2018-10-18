@@ -24,8 +24,8 @@ namespace afds {
             random = new MersenneTwister(12);
             // TODO: fix extra station 666 (as the bus has only 12)
             // TODO: remove 666, just turn around
-            Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135, 1 };
-            Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113, 1 };
+            Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135 };
+            Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113 };
             const string Filepath = "./rates_a.csv";
             Rates_a = ReadCsv(Filepath);
             const string Filepath1 = "./rates_b.csv";

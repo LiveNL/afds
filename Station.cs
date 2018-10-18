@@ -26,15 +26,13 @@ namespace afds {
     public int WaitingPeople() {
       DateTime then;
       DateTime now = LastArrivalEvent.DateTime;
-      bool laterThan715 = now.AddMinutes(-15).TimeOfDay > new DateTime(1, 1, 1, 7, 15, 0).TimeOfDay;
+      DateTime timeIs715 = new DateTime(1, 1, 1, 7, 15, 0);
+      bool laterThan715 = now.AddMinutes(-15).TimeOfDay > timeIs715.TimeOfDay;
 
       if (LastDepartureEvent != null)  {
         then = LastDepartureEvent.DateTime;
-
       } else if (laterThan715){
-        // TODO: check if this is what we want,
-        // provides passengers for the first time on a day, with a 15 min window.
-        then = now.AddMinutes(-15);
+        then = now.AddMinutes(-15); // TODO: check if this is what we want,
       } else { return 0; }
 
       int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
@@ -42,13 +40,13 @@ namespace afds {
       return p;
     }
 
+    // NOTE: Check if the mapping works as expected;
     public double[] Rates(int nr) {
       string stationName = StationDict()[nr];
       if (nr < 9) {
-        return Probabilities.Rates_a[stationName];
-      } else {
-        // NOTE: Check if the mapping works as expected;
         return Probabilities.Rates_b[stationName];
+      } else {
+        return Probabilities.Rates_a[stationName];
       }
     }
 

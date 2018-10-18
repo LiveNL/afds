@@ -60,14 +60,12 @@ namespace afds {
       string eventText = "";
       switch(e.EventType) {
         case 0:
-          eventText = "Depart";
-          break;
+          eventText = "Depart"; break;
         case 1:
-          eventText = "Arrivl";
-          break;
+          eventText = "Arrivl"; break;
       }
       Console.WriteLine("{0} : {1} tram {2} at {3}",
-        e.DateTime, eventText, tram.Number, tram.Station.Number);
+        e.DateTime, eventText, tram.Number, tram.Station.StationDict()[tram.Station.Number]);
     }
 
     public void LogTramPassengers(Tram tram) {

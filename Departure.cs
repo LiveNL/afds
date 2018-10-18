@@ -58,12 +58,12 @@ namespace afds {
       // TODO: check if this is always the same for each call within this class
       int travelTime;
       if (Station.Number < 9) {
-        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number]);
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number]);
       } else {
-        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number - 9]);
       }
 
-      LogTravelTime(travelTime);
+      // LogTravelTime(travelTime);
       return travelTime;
     }
 
