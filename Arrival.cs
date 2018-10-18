@@ -5,8 +5,9 @@ using System.Linq;
 namespace afds {
   public class Arrival {
     public DateTime DateTime { get; set; }
-    public Station Station { get; set; }
-    public Tram Tram { get; set; }
+    public Station  Station  { get; set; }
+    public Tram     Tram     { get; set; }
+
     public int DepartureEventType = 0;
 
     public Arrival(Event e, Station station, Tram tram) {
@@ -25,8 +26,7 @@ namespace afds {
     }
 
     public DateTime TimeAfterDwellTime() {
-      // NOTE: do we need 'this'?
-      DateTime expectedDeparture = this.DateTime.AddSeconds(DwellTime());
+      DateTime expectedDeparture = DateTime.AddSeconds(DwellTime());
       Tram.ExpectedDeparture = expectedDeparture;
       return expectedDeparture;
     }

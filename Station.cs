@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace afds {
   public class Station {
-    public int Number { get; set; }
-    public int Passengers { get; set; }
+    public int   Number             { get; set; }
+    public int   Passengers         { get; set; }
     public Event LastDepartureEvent { get; set; }
-    public Event LastArrivalEvent { get; set; }
+    public Event LastArrivalEvent   { get; set; }
 
     public Station(int i) {
       Number = i;
