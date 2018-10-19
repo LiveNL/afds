@@ -11,6 +11,8 @@ namespace afds {
         static int[] runtimes_b;
         static Dictionary<string, double[]> rates_a;
         static Dictionary<string, double[]> rates_b;
+        static Dictionary<string, double[]> exit_rates_a;
+        static Dictionary<string, double[]> exit_rates_b;
 
         public static int[] Runtimes_a { get => runtimes_a; set => runtimes_a = value; }
         public static int[] Runtimes_b { get => runtimes_b; set => runtimes_b = value; }
@@ -100,7 +102,7 @@ namespace afds {
             return res;
         }
 
-        static int CalcExit(DateTime time, string stop, char dir, int occupation)
+        public static int CalcExit(DateTime time, string stop, char dir, int occupation)
         {
             if (dir == 'a' && stop == "Centraal Station")
                 return occupation;

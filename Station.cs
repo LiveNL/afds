@@ -18,10 +18,10 @@ namespace afds {
     }
 
     public Station NextStation(Station[] stations) {
-      int next = this.Number + 1;
+      int next = Number + 1;
       if (next == stations.Length) {
         next = 0;
-      } else if (next == 667) {
+      } else if (Number == 666) {
         next = 0;
       }
       return stations[next];
@@ -40,7 +40,7 @@ namespace afds {
       } else { return 0; }
 
       int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
-      return p;
+      return Passengers + p;
     }
 
     public double[] Rates(int nr) {

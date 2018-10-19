@@ -38,7 +38,7 @@ namespace afds {
       switch (eventType) {
         case 0: // departure
           Station departureStation = tram.Station;
-          LogEvent(e, tram, departureStation);
+          // LogEvent(e, tram, departureStation);
           Departure departure = new Departure(e.DateTime, departureStation, tram);
 
           tram.LastStation = departureStation;
@@ -52,7 +52,7 @@ namespace afds {
 
         case 1: // arrival
           Station arrivalStation = tram.LastStation.NextStation(uithoflijn.Stations);
-          LogEvent(e, tram, arrivalStation);
+          // LogEvent(e, tram, arrivalStation);
           Arrival arrival = new Arrival(e, arrivalStation, tram);
 
           tram.Station = arrivalStation;
@@ -65,7 +65,7 @@ namespace afds {
 
         case 2: // station check
           Station stationToCheck = tram.LastStation.NextStation(uithoflijn.Stations);
-          LogEvent(e, tram, stationToCheck);
+          // LogEvent(e, tram, stationToCheck);
           StationCheck stationCheck = new StationCheck(e, stationToCheck, tram);
 
           if (stationCheck.EmptyStation(uithoflijn)) {
@@ -75,8 +75,8 @@ namespace afds {
           }
 
         case 3: // add tram
-          LogEvent(e, tram, tram.Station);
-          Order(uithoflijn);
+          // LogEvent(e, tram, tram.Station);
+          // Order(uithoflijn);
           AddTram addTram = new AddTram(e, tram.Station, tram);
 
           if (e.DateTime < DateTime.Parse("7:00:00 AM")) {
