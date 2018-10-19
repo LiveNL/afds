@@ -17,13 +17,10 @@ namespace afds {
     }
 
     public List<Event> ScheduleDeparture(List<Event> events) {
-      events.Add(NewDepartureEvent());
+      events.Add(new Event(TimeAfterDwellTime(), DepartureEventType, Tram));
       return events;
     }
 
-    public Event NewDepartureEvent() {
-      return new Event(TimeAfterDwellTime(), DepartureEventType, Tram);
-    }
 
     public DateTime TimeAfterDwellTime() {
       DateTime fstDwellTime = DateTime.AddSeconds(DwellTime());

@@ -11,6 +11,7 @@ namespace afds {
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
+    public Cross[] Crosses { get; set; }
 
     public Uithoflijn() {
       Station[] stations = new Station[STATIONS];
@@ -21,6 +22,10 @@ namespace afds {
       Station depot = new Station(666);
       for (int i = 0; i < TRAMS; i++) { trams[i] = new Tram(i, depot); }
       Trams = trams;
+
+      Cross[] crosses = new Cross[2];
+      for (int i = 0; i < 2; i++) { crosses[i] = new Cross(i); }
+      Crosses = crosses;
 
       Console.WriteLine("New UithofLijn created!");
     }
@@ -39,6 +44,10 @@ namespace afds {
           Station departureStation = tram.Station;
           LogEvent(e, tram, departureStation);
           Departure departure = new Departure(e.DateTime, departureStation, tram);
+
+          if (departureStation.Number == 8 && (departure.CrossIsOpen(uithoflijn) == false)){
+            return departure.ScheduleDeparture(events);
+          }
 
           tram.LastStation = departureStation;
           tram.Station = null;
@@ -62,15 +71,24 @@ namespace afds {
           return arrival.ScheduleDeparture(events);
 
         case 2: // station check
-          Station stationToCheck = tram.LastStation.NextStation(uithoflijn.Stations);
+          Station stationToCheck;
+          if (tram.LastStation.Number == 8) {
+            stationToCheck = uithoflijn.Stations[10];
+          } else {
+            stationToCheck = tram.LastStation.NextStation(uithoflijn.Stations);
+          }
+
           LogEvent(e, tram, stationToCheck);
           StationCheck stationCheck = new StationCheck(e, stationToCheck, tram);
 
           if (stationCheck.EmptyStation(uithoflijn)) {
-            return stationCheck.ScheduleArrival(e, events);
+            return stationCheck.ScheduleArrival(stationToCheck, e, events);
+          } else if (stationToCheck.Number == 8) { // and implicitly isn't empty
+            return stationCheck.ScheduleCrossCheck(events);
           } else {
             return stationCheck.ScheduleStationCheck(events, uithoflijn);
           }
+
 
         case 3: // add tram
           LogEvent(e, tram, tram.Station);
@@ -86,6 +104,23 @@ namespace afds {
             // Remove Trams till 9:30
           }
           return events;
+
+        case 4: // cross check
+          LogEvent(e, tram, tram.LastStation);
+          CrossCheck crossCheck = new CrossCheck(e, tram.LastStation, tram);
+
+          if (crossCheck.CrossIsOpen(uithoflijn)) {
+            crossCheck.ScheduleArrival(uithoflijn.Stations[9], e, events);
+            uithoflijn.Crosses[0].Open = false;
+            return crossCheck.ScheduleCrossOpen(events);
+          } else {
+            return crossCheck.ScheduleStationCheck(events, uithoflijn);
+          }
+
+          case 5: // reopen cross
+            LogEvent(e, tram, tram.LastStation);
+            uithoflijn.Crosses[0].Open = true;
+            return events;
       }
       return events;
     }
@@ -101,6 +136,10 @@ namespace afds {
           eventText = "StCheck"; break;
         case 3:
           eventText = "NewTram"; break;
+        case 4:
+          eventText = "CrssChk"; break;
+        case 5:
+          eventText = "Opencrs"; break;
       }
 
       // Console.WriteLine("Event: {0}", e.EventType);

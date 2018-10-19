@@ -3,17 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace afds {
-  public class StationCheck {
+  public class CrossCheck {
     public DateTime DateTime { get; set; }
     public Station  Station  { get; set; }
     public Tram     Tram     { get; set; }
 
     public int ArrivalEventType = 1;
 
-    public StationCheck(Event e, Station station, Tram tram) {
+    public CrossCheck (Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
       Station = station;
       Tram = tram;
+    }
+
+    public bool CrossIsOpen(Uithoflijn uithoflijn) {
+      Cross cross;
+      if (Station.Number == 8) {
+        cross = uithoflijn.Crosses[0];
+      } else {
+        cross = uithoflijn.Crosses[1];
+      }
+      return cross.Open;
+    }
+
+    public List<Event> ScheduleCrossOpen(List<Event> events) {
+      events.Add(new Event(DateTime.AddSeconds(60), 5, Tram));
+      return events;
     }
 
     public List<Event> ScheduleArrival(Event e, List<Event> events) {
