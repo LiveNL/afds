@@ -11,7 +11,7 @@ namespace afds {
 
       foreach (Station station in uithoflijn.Stations) {
         Console.WriteLine("Station NR: {0,-2} | Passengers {1,-4} | {2}",
-          station.Number, station.Passengers, station.GetHashCode());
+          station.Number, station.Waiting, station.GetHashCode());
       }
     }
   }

@@ -4,14 +4,14 @@ using System.Collections.Generic;
 namespace afds {
   public class Station {
     public int   Number             { get; set; }
-    public int   Passengers         { get; set; }
+    public int   Waiting            { get; set; }
     public Event LastDepartureEvent { get; set; }
     public Event LastArrivalEvent   { get; set; }
     public Tram  Tram               { get; set; }
 
     public Station(int i) {
       Number             = i;
-      Passengers         = 0;
+      Waiting            = 0;
       LastDepartureEvent = null;
       LastArrivalEvent   = null;
       Tram               = null;
@@ -36,11 +36,19 @@ namespace afds {
       if (LastDepartureEvent != null)  {
         then = LastDepartureEvent.DateTime;
       } else if (laterThan715){
-        then = now.AddMinutes(-15); // TODO: check if this is what we want,
+        then = now.AddMinutes(-15);
       } else { return 0; }
 
       int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
-      return Passengers + p;
+      Waiting = Waiting + p;
+      return Waiting;
+    }
+
+    public int WaitingPeople2(DateTime now) {
+      DateTime then = LastArrivalEvent.DateTime;
+      int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      Waiting = Waiting + p;
+      return Waiting;
     }
 
     public double[] Rates(int nr) {

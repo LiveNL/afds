@@ -7,7 +7,7 @@ namespace afds {
     // There are 9 stations, with two sides, therefore 18 are created
     // Next to that there are 27 trams (atm), 13 double ones, 1 stand-by
     public int STATIONS = 18;
-    public int TRAMS = 13;
+    public int TRAMS    = 13;
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -33,12 +33,11 @@ namespace afds {
     public List<Event> Update(Uithoflijn uithoflijn, Event e, List<Event> events) {
       Tram tram     = uithoflijn.Trams[e.Tram.Number];
       int eventType = e.EventType;
-      // LogTramPassengers(tram);
 
       switch (eventType) {
         case 0: // departure
           Station departureStation = tram.Station;
-          // LogEvent(e, tram, departureStation);
+          LogEvent(e, tram, departureStation);
           Departure departure = new Departure(e.DateTime, departureStation, tram);
 
           tram.LastStation = departureStation;
@@ -47,12 +46,11 @@ namespace afds {
           departure.Station.LastDepartureEvent = e;
           departure.Station.Tram = null;
 
-          // events = departure.ScheduleNewTram(events, uithoflijn);
           return departure.ScheduleStationCheck(events, uithoflijn);
 
         case 1: // arrival
           Station arrivalStation = tram.LastStation.NextStation(uithoflijn.Stations);
-          // LogEvent(e, tram, arrivalStation);
+          LogEvent(e, tram, arrivalStation);
           Arrival arrival = new Arrival(e, arrivalStation, tram);
 
           tram.Station = arrivalStation;
@@ -65,7 +63,7 @@ namespace afds {
 
         case 2: // station check
           Station stationToCheck = tram.LastStation.NextStation(uithoflijn.Stations);
-          // LogEvent(e, tram, stationToCheck);
+          LogEvent(e, tram, stationToCheck);
           StationCheck stationCheck = new StationCheck(e, stationToCheck, tram);
 
           if (stationCheck.EmptyStation(uithoflijn)) {
@@ -75,8 +73,7 @@ namespace afds {
           }
 
         case 3: // add tram
-          // LogEvent(e, tram, tram.Station);
-          // Order(uithoflijn);
+          LogEvent(e, tram, tram.Station);
           AddTram addTram = new AddTram(e, tram.Station, tram);
 
           if (e.DateTime < DateTime.Parse("7:00:00 AM")) {

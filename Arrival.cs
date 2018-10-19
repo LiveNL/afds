@@ -26,13 +26,20 @@ namespace afds {
     }
 
     public DateTime TimeAfterDwellTime() {
-      DateTime expectedDeparture = DateTime.AddSeconds(DwellTime());
+      DateTime fstDwellTime = DateTime.AddSeconds(DwellTime());
+      DateTime expectedDeparture = fstDwellTime.AddSeconds(sndDwellTime(fstDwellTime));
       return expectedDeparture;
     }
 
     public int DwellTime() {
-      int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(),
+      int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(DateTime, 1),
                                                      Tram.PassengersOut(DateTime));
+      // LogDwellTime(dwellTime);
+      return dwellTime;
+    }
+
+    public int sndDwellTime(DateTime dt) {
+      int dwellTime = Probabilities.CalcSecondDwellingTime(Tram.PassengersIn(dt, 2));
       // LogDwellTime(dwellTime);
       return dwellTime;
     }

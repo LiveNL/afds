@@ -55,7 +55,7 @@ namespace afds {
             else return (int)gamma;
         }
 
-        static int CalcSecondDwellingTime(int passengers_in)
+        public static int CalcSecondDwellingTime(int passengers_in)
         {
             double mean = 0.22 * passengers_in;
             double min = 0.8 * mean;

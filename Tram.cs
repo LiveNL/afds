@@ -14,9 +14,15 @@ namespace afds {
       LastStation = station;
     }
 
-    // TODO: Passengers needs to be capped at 420
-    public int PassengersIn() {
-      int waiting = Station.WaitingPeople();
+    public int PassengersIn(DateTime dt, int dwellTime) {
+      int waiting;
+
+      if (dwellTime == 1) {
+        waiting = Station.WaitingPeople();
+      } else {
+        waiting = Station.WaitingPeople2(dt);
+      }
+
       int space = 420 - Passengers;
       int newPassengers = 0;
 
@@ -28,29 +34,28 @@ namespace afds {
         newPassengers = space;
       }
 
-      Station.Passengers = waiting - newPassengers;
+      Station.Waiting = waiting - newPassengers;
       Passengers = Passengers + newPassengers;
       return newPassengers;
     }
 
     public int PassengersOut(DateTime dt) {
-      char dir;
       string stationName = Station.StationDict()[Station.Number];
-
-      if (Station.Number < 9) {
-        dir = 'a';
-      } else {
-        dir = 'b';
-      }
-
-      int wantOut = Probabilities.CalcExit(dt, stationName, dir, Passengers);
+      int wantOut = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
       int p = Passengers;
       Passengers = Passengers - wantOut;
       // LogPassengersOut(dt, stationName, p, wantOut, Passengers);
       return wantOut;
     }
 
-    // TODO: make this prev/next based on location instead of nr
+    public char Direction() {
+      if (Station.Number < 9) {
+        return 'a';
+      } else {
+        return 'b';
+      }
+    }
+
     public Tram PrevTram(Tram[] trams) {
       int prev = this.Number + 1;
       if (prev >= trams.Length) { prev = 0; };
