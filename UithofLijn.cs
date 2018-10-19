@@ -47,7 +47,7 @@ namespace afds {
           departure.Station.LastDepartureEvent = e;
           departure.Station.Tram = null;
 
-          events = departure.ScheduleNewTram(events, uithoflijn);
+          // events = departure.ScheduleNewTram(events, uithoflijn);
           return departure.ScheduleStationCheck(events, uithoflijn);
 
         case 1: // arrival
@@ -73,6 +73,21 @@ namespace afds {
           } else {
             return stationCheck.ScheduleStationCheck(events, uithoflijn);
           }
+
+        case 3: // add tram
+          LogEvent(e, tram, tram.Station);
+          AddTram addTram = new AddTram(e, tram.Station, tram);
+
+          if (e.DateTime <= DateTime.Parse("7:00:00 AM")) {
+            addTram.ScheduleNewTram(e, events, uithoflijn);
+            addTram.ScheduleAddTramEvent(events, uithoflijn, 900);
+          } else if (DateTime.Parse("7:00:00 AM") < e.DateTime && e.DateTime <= DateTime.Parse("7:00:00 PM")) {
+            addTram.ScheduleNewTram(e, events, uithoflijn);
+            addTram.ScheduleAddTramEvent(events, uithoflijn, 180);
+          } else {
+            // Remove Trams till 9:30
+          }
+          return events;
       }
       return events;
     }
@@ -81,12 +96,18 @@ namespace afds {
       string eventText = "";
       switch(e.EventType) {
         case 0:
-          eventText = "Depart"; break;
+          eventText = "Dprture"; break;
         case 1:
-          eventText = "Arrivl"; break;
+          eventText = "Arrival"; break;
         case 2:
-          eventText = "SCheck"; break;
+          eventText = "StCheck"; break;
+        case 3:
+          eventText = "NewTram"; break;
       }
+
+      // Console.WriteLine("Event: {0}", e.EventType);
+      // Console.WriteLine("TRAM: {0}", tram.Number);
+      // Console.WriteLine("Station: {0}", station.Number);
       Console.WriteLine("{0} : {1} tram {2,-2} at {3,-2} : {4}",
         e.DateTime, eventText, tram.Number, station.Number, station.StationDict()[station.Number]);
     }

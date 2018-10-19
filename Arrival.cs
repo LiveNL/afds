@@ -32,12 +32,12 @@ namespace afds {
 
     public int DwellTime() {
       int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(), Tram.PassengersOut());
-      LogDwellTime(dwellTime);
+      // LogDwellTime(dwellTime);
       return dwellTime;
     }
 
     public void LogDwellTime(int i) {
-      Console.WriteLine("{0} : Dwellt tram {2,-2} at {3,-2} : {1} sec",
+      Console.WriteLine("{0} : Dwelltm tram {2,-2} at {3,-2} : {1} sec",
         DateTime, i, Tram.Number, Station.Number);
     }
   }

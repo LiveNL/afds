@@ -13,9 +13,7 @@ namespace afds {
       List<Event> events    = new List<Event>();
 
       Tram firstTram = uithoflijn.Trams[0];
-      firstTram.Station = uithoflijn.Stations[0];
-      firstTram.LastStation = uithoflijn.Stations[0];
-      events.Add(new Event(DateTime.Parse("6:00:00 AM"), 0, firstTram));
+      events.Add(new Event(DateTime.Parse("6:00:00 AM"), 3, firstTram));
 
       bool endCondition = false;
       while (endCondition == false) {

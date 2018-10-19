@@ -10,7 +10,6 @@ namespace afds {
 
     public int StationCheckEventType = 2;
     public int Q                     = 300; // TODO: vary this Q
-    public int Interval              = 180; // TODO: vary this Interval
 
     public Departure(DateTime dt, Station station, Tram tram) {
       DateTime = dt;
@@ -38,24 +37,12 @@ namespace afds {
       } else {
         travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
       }
-      LogTravelTime(travelTime);
+      // LogTravelTime(travelTime);
       return travelTime;
     }
 
-    public List<Event> ScheduleNewTram(List<Event> events, Uithoflijn uithoflijn) {
-      // TODO: maybe make this just new trams instead of next trams
-      Tram prevTram = Tram.PrevTram(uithoflijn.Trams);
-
-      if (Station.Number == 0 && prevTram.Station?.Number == 666) {
-        prevTram.Station     = uithoflijn.Stations[0];
-        prevTram.LastStation = uithoflijn.Stations[0];
-        events.Add(new Event(DateTime.AddSeconds(Interval), 0, prevTram));
-      }
-      return events;
-    }
-
     public void LogTravelTime(int i) {
-      Console.WriteLine("{0} : Travel tram {2,-2} at {3,-2} : {1} sec",
+      Console.WriteLine("{0} : Travelt tram {2,-2} at {3,-2} : {1} sec",
         DateTime, i, Tram.Number, Station.Number);
     }
   }

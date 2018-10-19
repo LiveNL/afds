@@ -19,7 +19,11 @@ namespace afds {
 
     public Station NextStation(Station[] stations) {
       int next = this.Number + 1;
-      if (next == stations.Length) { next = 0; };
+      if (next == stations.Length) {
+        next = 0;
+      } else if (next == 667) {
+        next = 0;
+      }
       return stations[next];
     }
 
@@ -67,6 +71,8 @@ namespace afds {
       map.Add(6, "Galgenwaard");      map.Add(11, "Galgenwaard");
       map.Add(7, "Vaartsche Rijn");   map.Add(10, "Vaartsche Rijn");
       map.Add(8, "Centraal Station"); map.Add(9,  "Centraal Station");
+
+      map.Add(666, "Depot");
       return map;
     }
   }
