@@ -76,12 +76,13 @@ namespace afds {
 
         case 3: // add tram
           LogEvent(e, tram, tram.Station);
+          Order(uithoflijn);
           AddTram addTram = new AddTram(e, tram.Station, tram);
 
-          if (e.DateTime <= DateTime.Parse("7:00:00 AM")) {
+          if (e.DateTime < DateTime.Parse("7:00:00 AM")) {
             addTram.ScheduleNewTram(e, events, uithoflijn);
             addTram.ScheduleAddTramEvent(events, uithoflijn, 900);
-          } else if (DateTime.Parse("7:00:00 AM") < e.DateTime && e.DateTime <= DateTime.Parse("7:00:00 PM")) {
+          } else if (DateTime.Parse("7:00:00 AM") <= e.DateTime && e.DateTime <= DateTime.Parse("7:00:00 PM")) {
             addTram.ScheduleNewTram(e, events, uithoflijn);
             addTram.ScheduleAddTramEvent(events, uithoflijn, 180);
           } else {
@@ -110,6 +111,14 @@ namespace afds {
       // Console.WriteLine("Station: {0}", station.Number);
       Console.WriteLine("{0} : {1} tram {2,-2} at {3,-2} : {4}",
         e.DateTime, eventText, tram.Number, station.Number, station.StationDict()[station.Number]);
+    }
+
+    public void Order(Uithoflijn uithoflijn) {
+      Console.WriteLine("Order:");
+      foreach (Tram tram in uithoflijn.Trams) {
+        Console.WriteLine("Tram NR: {0,-2} | Passengers {1,-4} | Station: {2,-2} | {3} ",
+            tram.Number, tram.Passengers, tram.LastStation.Number, tram.GetHashCode());
+      }
     }
 
     public void LogTramPassengers(Tram tram) {
