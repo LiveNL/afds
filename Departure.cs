@@ -8,70 +8,24 @@ namespace afds {
     public Station  Station  { get; set; }
     public Tram     Tram     { get; set; }
 
-    public int ArrivalEventType = 1;
-    public int Q                = 180; // TODO: vary this Q
-    public int Interval         = 180; // TODO: vary this Interval
+    public int StationCheckEventType = 2;
+    public int Q                     = 300; // TODO: vary this Q
+    public int Interval              = 180; // TODO: vary this Interval
 
     public Departure(DateTime dt, Station station, Tram tram) {
       DateTime = dt;
-      Station = station;
-      Tram = tram;
+      Station  = station;
+      Tram     = tram;
     }
 
-    // TODO: verify if this is the way we want to add new trams to the track
-    public List<Event> ScheduleNewTram(List<Event> events, Uithoflijn uithoflijn) {
-      Tram nextTram = Tram.NextTram(uithoflijn.Trams);
-
-      if (Tram.Station.Number == 0 && nextTram.Station == null) {
-        nextTram.Station = uithoflijn.Stations[0];
-        events.Add(new Event(DateTime.AddSeconds(Interval), 1, nextTram));
-      }
+    public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {
+      events.Add(NewCheckStationEvent(uithoflijn));
       return events;
     }
 
-    public List<Event> ScheduleArrival(List<Event> events, Uithoflijn uithoflijn) {
-      Tram   prevTram   = Tram.PrevTram(uithoflijn.Trams);
-      Event  newEvent   = NewArrivalEvent(uithoflijn);
-      double travelTime = (newEvent.DateTime - DateTime).TotalSeconds;
-
-      DateTime expectedArrival = DateTime.AddSeconds(travelTime);
-      DateTime expectedArrivalplus40sec = expectedArrival.AddSeconds(40);
-      int nextStation = Station.NextStation(uithoflijn.Stations).Number;
-
-      if (Station.NextStation(uithoflijn.Stations).Tram == null) {
-        events.Add(newEvent);
-      } else if (prevTram.ExpectedDeparture < expectedArrivalplus40sec) {
-        // TODO: FIX THIS CONDITIONAL
-        events.Add(newEvent);
-      }
-
-      // else {
-      //  double diff = (prevTram.ExpectedDeparture - expectedArrival).TotalSeconds;
-      //  LogToCloseTram(travelTime, prevTram, expectedArrival, nextStation, diff);
-      //  newEvent.DateTime = newEvent.DateTime.AddSeconds(diff + 1);
-      //  events.Add(newEvent);
-      // }
-
-      // if (prevTram.Station?.Number == nextStation) {
-      //   if (prevTram.ExpectedDeparture < expectedArrivalplus40sec) {
-      //     events.Add(newEvent);
-      //   } else {
-      //     double diff = (prevTram.ExpectedDeparture - expectedArrival).TotalSeconds;
-      //     LogToCloseTram(travelTime, prevTram, expectedArrival, nextStation, diff);
-      //     newEvent.DateTime = newEvent.DateTime.AddSeconds(diff + 1);
-      //     events.Add(newEvent);
-      //   }
-      // } else {
-      //   // TODO: prevTram is past nextStation, but could still be to close
-      //   events.Add(newEvent);
-      // }
-      return events;
-    }
-
-    public Event NewArrivalEvent(Uithoflijn uithoflijn) {
-      Tram.Station = Tram.Station.NextStation(uithoflijn.Stations);
+    public Event NewCheckStationEvent(Uithoflijn uithoflijn) {
       DateTime timeAfterTravelTime = DateTime.AddSeconds(TravelTime());
-      return new Event(timeAfterTravelTime, ArrivalEventType, Tram);
+      return new Event(timeAfterTravelTime, StationCheckEventType, Tram);
     }
 
     public int TravelTime() {
@@ -84,21 +38,24 @@ namespace afds {
       } else {
         travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
       }
-      return travelTime; // LogTravelTime(travelTime);
+      LogTravelTime(travelTime);
+      return travelTime;
     }
 
-    public void LogToCloseTram(double tt, Tram prevTram, DateTime expArr, int ns, double diff) {
-      Console.WriteLine("TT:     {0}", tt);
-      Console.WriteLine("Now:    {0}", DateTime);
-      Console.WriteLine("ExpDep: {0} tram {1} at {2}",
-        prevTram.ExpectedDeparture, prevTram.Number, prevTram.Station?.Number);
-      Console.WriteLine("ExpArr: {0} tram {1} at {2}",
-        expArr, Tram.Number, ns);
-      Console.WriteLine("Diff:   {0}", diff);
+    public List<Event> ScheduleNewTram(List<Event> events, Uithoflijn uithoflijn) {
+      // TODO: maybe make this just new trams instead of next trams
+      Tram prevTram = Tram.PrevTram(uithoflijn.Trams);
+
+      if (Station.Number == 0 && prevTram.Station?.Number == 666) {
+        prevTram.Station     = uithoflijn.Stations[0];
+        prevTram.LastStation = uithoflijn.Stations[0];
+        events.Add(new Event(DateTime.AddSeconds(Interval), 0, prevTram));
+      }
+      return events;
     }
 
     public void LogTravelTime(int i) {
-      Console.WriteLine("{0} : Travel {1} sec tram {2} at {3}",
+      Console.WriteLine("{0} : Travel tram {2,-2} at {3,-2} : {1} sec",
         DateTime, i, Tram.Number, Station.Number);
     }
   }

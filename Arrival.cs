@@ -27,18 +27,17 @@ namespace afds {
 
     public DateTime TimeAfterDwellTime() {
       DateTime expectedDeparture = DateTime.AddSeconds(DwellTime());
-      Tram.ExpectedDeparture = expectedDeparture;
       return expectedDeparture;
     }
 
     public int DwellTime() {
       int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(), Tram.PassengersOut());
-      // LogDwellTime(dwellTime);
+      LogDwellTime(dwellTime);
       return dwellTime;
     }
 
     public void LogDwellTime(int i) {
-      Console.WriteLine("{0} : Dwelltime {1} sec tram {2} at {3}",
+      Console.WriteLine("{0} : Dwellt tram {2,-2} at {3,-2} : {1} sec",
         DateTime, i, Tram.Number, Station.Number);
     }
   }

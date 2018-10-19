@@ -36,11 +36,9 @@ namespace afds {
       } else { return 0; }
 
       int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
-      // LogWaitingPeople(p, then);
       return p;
     }
 
-    // NOTE: Check if the mapping works as expected;
     public double[] Rates(int nr) {
       string stationName = StationDict()[nr];
       if (nr < 9) {
