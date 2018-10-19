@@ -16,7 +16,8 @@ namespace afds {
         public static int[] Runtimes_b { get => runtimes_b; set => runtimes_b = value; }
         public static Dictionary<string, double[]> Rates_a { get => rates_a; set => rates_a = value; }
         public static Dictionary<string, double[]> Rates_b { get => rates_b; set => rates_b = value; }
-
+        public static Dictionary<string, double[]> Exit_rates_a { get => exit_rates_a; set => exit_rates_a = value; }
+        public static Dictionary<string, double[]> Exit_rates_b { get => exit_rates_b; set => exit_rates_b = value; }
 
         public static void InitProbabilities()
         {
@@ -29,6 +30,10 @@ namespace afds {
             Rates_a = ReadCsv(Filepath);
             const string Filepath1 = "./rates_b.csv";
             Rates_b = ReadCsv(Filepath1);
+            const string Filepath2 = "./exit_rates_a.csv";
+            Exit_rates_a = ReadCsv(Filepath2);
+            const string Filepath3 = "./exit_rates_b.csv";
+            Exit_rates_b = ReadCsv(Filepath3);
         }
 
         //The functions that are directly called in the simulation.
@@ -94,6 +99,30 @@ namespace afds {
             return res;
         }
 
+        static int CalcExit(DateTime time, string stop, char dir, int occupation)
+        {
+            if (dir == 'a' && stop == "Centraal Station")
+                return occupation;
+            if (dir == 'b' && stop == "P+R De Uithof")
+                return occupation;
+            if (dir == 'a' && Array.IndexOf(new string[] { "P+R De Uithof", "WKZ", "UMC", "Heidelberglaan" }, stop) > -1)
+                return 0;
+            if (dir == 'b' && stop == "Centraal Station")
+                return 0;
+
+            double mean;
+            if (dir == 'a')
+                mean = Exit_rates_a[stop][TimeToIndex(time)];
+            else
+                mean = Exit_rates_b[stop][TimeToIndex(time)];
+
+            double stdev = 0.6756 * mean;
+            int norm = (int)CalcNormal(mean, stdev);
+            if (norm > occupation)
+                return occupation;
+            return norm > 0 ? norm : 0;
+        }
+
         //The probability functions that are used in determining the random variables.
         static double GenerateGammaValue(int k, double theta)
         {
@@ -154,7 +183,7 @@ namespace afds {
                 var names = first_line.Split(';');
                 for (int i = 1; i < names.Length; i++)
                 {
-                    res.Add(names[i], new double[48]);
+                    res.Add(names[i], new double[62]);
                 }
                 int n = 0;
                 while (!reader.EndOfStream)
