@@ -49,6 +49,10 @@ namespace afds {
             return departure.ScheduleStationCheck(events, uithoflijn);
           }
 
+          if (departureStation.Number == 17 && (departure.CrossIsOpen(uithoflijn) == false)){
+            return departure.ScheduleStationCheck(events, uithoflijn);
+          }
+
           tram.LastStation                     = departureStation;
           tram.Station                         = null;
           departure.Station.LastDepartureEvent = e;
@@ -77,7 +81,7 @@ namespace afds {
 
           if (stationToCheck.Tram == null) {
             return stationCheck.ScheduleArrival(e, events);
-          } else if (stationToCheck.Number == 8) { // and implicitly isn't empty
+          } else if (stationToCheck.Number == 8 || stationToCheck.Number == 17) { // and implicitly isn't empty
             return stationCheck.ScheduleCrossCheck(events);
           } else {
             return stationCheck.ScheduleStationCheck(events, uithoflijn);
@@ -94,8 +98,6 @@ namespace afds {
           } else if (DateTime.Parse("7:00:00 AM") <= e.DateTime && e.DateTime <= DateTime.Parse("7:00:00 PM")) {
             addTram.ScheduleNewTram(e, events, uithoflijn);
             addTram.ScheduleAddTramEvent(events, uithoflijn, 180);
-          } else {
-            // Remove Trams till 9:30
           }
           return events;
 
@@ -104,9 +106,13 @@ namespace afds {
           LogEvent(e, tram, tram.LastStation);
           CrossCheck crossCheck = new CrossCheck(e, tram.LastStation, tram);
 
-          if (crossCheck.CrossIsOpen(uithoflijn)) {
+          if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 7) {
             crossCheck.ScheduleArrival(events, uithoflijn.Stations[9]);
             uithoflijn.Crosses[0].Open = false; // for 1 minute
+            return crossCheck.ScheduleCrossOpen(events);
+          } else if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 16) {
+            crossCheck.ScheduleArrival(events, uithoflijn.Stations[0]);
+            uithoflijn.Crosses[1].Open = false; // for 1 minute
             return crossCheck.ScheduleCrossOpen(events);
           } else {
             return crossCheck.ScheduleStationCheck(events, uithoflijn);
@@ -114,8 +120,12 @@ namespace afds {
 
 
           case 5: // reopen cross
-            LogEvent(e, tram, tram.LastStation);
-            uithoflijn.Crosses[0].Open = true;
+            LogEvent(e, tram, e.Station);
+            if (e.Station.Number == 7) {
+              uithoflijn.Crosses[0].Open = true;
+            } else {
+              uithoflijn.Crosses[1].Open = true;
+            }
             return events;
       }
       return events;

@@ -17,13 +17,11 @@ namespace afds {
     }
 
     public bool CrossIsOpen(Uithoflijn uithoflijn) {
-      Cross cross;
       if (Station.Number == 8) {
-        cross = uithoflijn.Crosses[0];
+        return uithoflijn.Crosses[0].Open;
       } else {
-        cross = uithoflijn.Crosses[1];
+        return uithoflijn.Crosses[1].Open;
       }
-      return cross.Open;
     }
 
     public List<Event> ScheduleCrossOpen(List<Event> events) {
@@ -34,10 +32,6 @@ namespace afds {
     public List<Event> ScheduleArrival(List<Event> events, Station newStation) {
       events.Add(new Event(DateTime, ArrivalEventType, Tram, newStation));
       return events;
-    }
-
-    public bool EmptyStation(Uithoflijn uithoflijn) {
-      return Station.NextStation(uithoflijn.Stations).Tram == null;
     }
 
     public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {

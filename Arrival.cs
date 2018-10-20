@@ -9,6 +9,7 @@ namespace afds {
     public Tram     Tram     { get; set; }
 
     public int DepartureEventType = 0;
+    public int Q                  = 300;
 
     public Arrival(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
@@ -36,8 +37,20 @@ namespace afds {
 
     public int sndDwellTime(DateTime dt) {
       int dwellTime = Probabilities.CalcSecondDwellingTime(Tram.PassengersIn(dt, 2));
-      // LogDwellTime(dwellTime);
-      return dwellTime;
+      int qTime = (int)extendedDwellTime(dt, dwellTime);
+      // LogDwellTime(qTime);
+      return dwellTime + qTime;
+    }
+
+    public double extendedDwellTime(DateTime fst, int snd) {
+      int[] qStations = { 8, 9, 17, 0 };
+      if (qStations.Contains(Station.Number)) {
+        DateTime after = fst.AddSeconds(snd);
+        double totalDwellTime = after.Subtract(DateTime).TotalSeconds;
+        return Q - totalDwellTime;
+      } else {
+        return 0;
+      }
     }
 
     public void LogDwellTime(int i) {

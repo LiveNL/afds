@@ -10,7 +10,6 @@ namespace afds {
 
     public int StationCheckEventType = 2;
     public int DepartureEventType    = 0;
-    public int Q                     = 300; // TODO: vary this Q
 
     public Departure(DateTime dt, Station station, Tram tram) {
       DateTime = dt;
@@ -37,20 +36,24 @@ namespace afds {
     public Station StationToCheck(Uithoflijn uithoflijn) {
       if (Station.Number == 8) {
         return uithoflijn.Stations[10];
+      } else if (Station.Number == 17) {
+        return uithoflijn.Stations[0];
       } else {
         return Tram.LastStation.NextStation(uithoflijn.Stations);
       }
     }
 
     public int TravelTime() {
-      int travelTime;
+      int travelTime = 0;
 
-      if (Station.Number < 8) {
+      if (Station.Number == 9) {
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[7]);
+      } else if (Station.Number == 0) {
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[7]);
+      } else if (Station.Number < 8) {
         travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[Station.Number]);
-      } else if (Station.Number == 8 || Station.Number == 17){
-        travelTime = Q;
-      } else {
-        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 9]);
+      } else if (Station.Number > 8) {
+        travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 10]);
       }
       // LogTravelTime(travelTime);
       return travelTime;
