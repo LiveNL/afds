@@ -69,10 +69,20 @@ namespace afds {
             int begin_i = TimeToIndex(begin);
             int end_i = TimeToIndex(end);
             double seconds = begin.Second + (60.0 * begin.Minute);
-            if (rates[begin_i] == 0) return new List<DateTime>();
+            if (rates[begin_i] == 0) {
+                double goto_time = (double)((int)(seconds) / 900) * 900.0;
+                seconds = goto_time;
+            }
             int j = begin_i;
-            while (seconds <= (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour))
+            while (seconds < (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour))
             {
+                if (rates[j] == 0)
+                {
+                    double goto_time = (double)((int)(seconds) / 900) * 900.0 + 900.0;
+                    seconds = goto_time;
+                    j++;
+                    continue;
+                }
                 double exp = CalcExp(rates[j]);
 
                 if (seconds + exp > (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour))
@@ -81,7 +91,6 @@ namespace afds {
                     double fraction = (end_time - seconds) / exp;
                     if (fraction >= random.NextDouble())
                         passengers.Add(begin.AddSeconds(seconds));
-                        //res++;
                     break;
                 }
 
@@ -98,12 +107,10 @@ namespace afds {
                 }
 
                 passengers.Add(begin.AddSeconds(seconds));
-                //res++;
                 seconds += exp;
             }
 
             return passengers;
-            //return res;
         }
 
         public static int CalcExit(DateTime time, string stop, char dir, int occupation)
