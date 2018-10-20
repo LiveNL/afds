@@ -37,7 +37,7 @@ namespace afds {
       if (Station.Number == 8) {
         return uithoflijn.Stations[10];
       } else if (Station.Number == 17) {
-        return uithoflijn.Stations[0];
+        return uithoflijn.Stations[1];
       } else {
         return Tram.LastStation.NextStation(uithoflijn.Stations);
       }

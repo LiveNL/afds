@@ -6,7 +6,7 @@ namespace afds {
   public class Uithoflijn {
     // There are 9 stations, with two sides, therefore 18 are created
     // Next to that there are 27 trams (atm), 13 double ones, 1 stand-by
-    public int STATIONS = 18;
+    public int STATIONS = 19; // 18 + 1 (depot)
     public int TRAMS    = 13;
 
     public Tram[] Trams { get; set; }
@@ -16,11 +16,11 @@ namespace afds {
     public Uithoflijn() {
       Station[] stations = new Station[STATIONS];
       for (int i = 0; i < STATIONS; i++) { stations[i] = new Station(i); }
+      stations[18] = new Station(666);
       Stations = stations;
 
       Tram[] trams = new Tram[TRAMS];
-      Station depot = new Station(666);
-      for (int i = 0; i < TRAMS; i++) { trams[i] = new Tram(i, depot); }
+      for (int i = 0; i < TRAMS; i++) { trams[i] = new Tram(i, stations[18]); }
       Trams = trams;
 
       Cross[] crosses = new Cross[2];
@@ -71,6 +71,8 @@ namespace afds {
           arrival.Station.LastArrivalEvent = e;
           arrival.Station.Tram             = tram;
 
+          if (arrival.Station.Number == 666) { return events; }
+
           return arrival.ScheduleDeparture(events);
 
 
@@ -79,9 +81,18 @@ namespace afds {
           LogEvent(e, tram, stationToCheck);
           StationCheck stationCheck = new StationCheck(e, stationToCheck, tram);
 
+          if (e.DateTime > DateTime.Parse("7:00:00 PM") && stationToCheck.Number == 17 && moreThan4(uithoflijn)) {
+            if (stationToCheck.Tram == null) {
+              return stationCheck.ScheduleRemoveTram(events, uithoflijn);
+            } else {
+              return stationCheck.ScheduleStationCheck(events, uithoflijn);
+            }
+          }
+
+          int[] crossStations = { 9, 0 };
           if (stationToCheck.Tram == null) {
             return stationCheck.ScheduleArrival(e, events);
-          } else if (stationToCheck.Number == 8 || stationToCheck.Number == 17) { // and implicitly isn't empty
+          } else if (crossStations.Contains(stationToCheck.Number)) { // and implicitly isn't empty
             return stationCheck.ScheduleCrossCheck(events);
           } else {
             return stationCheck.ScheduleStationCheck(events, uithoflijn);
@@ -129,6 +140,17 @@ namespace afds {
             return events;
       }
       return events;
+    }
+
+    public bool moreThan4(Uithoflijn uithoflijn) {
+      int depotTrams = 0;
+      foreach (Tram tram in uithoflijn.Trams) {
+        if (tram.Station?.Number == 666) {
+          depotTrams++;
+        }
+      }
+
+      if (depotTrams > 8) { return false; } else { return true; }
     }
 
     public void LogEvent(Event e, Tram tram, Station station) {

@@ -15,6 +15,7 @@ namespace afds {
     }
 
     public int PassengersIn(DateTime dt, int dwellTime) {
+      if (Station.Number == 666) { return 0; }
       int waiting;
 
       if (dwellTime == 1) {
@@ -40,6 +41,7 @@ namespace afds {
     }
 
     public int PassengersOut(DateTime dt) {
+      if (Station.Number == 666) { return Passengers; }
       string stationName = Station.StationDict()[Station.Number];
       int wantOut = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
       int p = Passengers;

@@ -36,5 +36,10 @@ namespace afds {
       events.Add(new Event(DateTime, 4, Tram, Station));
       return events;
     }
+
+    public List<Event> ScheduleRemoveTram(List<Event> events, Uithoflijn uithoflijn) {
+      events.Add(new Event(DateTime, ArrivalEventType, Tram, uithoflijn.Stations[18]));
+      return events;
+    }
   }
 }
