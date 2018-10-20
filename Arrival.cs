@@ -16,26 +16,26 @@ namespace afds {
       Tram = tram;
     }
 
-    public List<Event> ScheduleDeparture(List<Event> events) {
-      events.Add(new Event(TimeAfterDwellTime(), DepartureEventType, Tram, Station));
+    public List<Event> ScheduleDeparture(List<Event> events, Uithoflijn uithoflijn) {
+      events.Add(new Event(TimeAfterDwellTime(uithoflijn), DepartureEventType, Tram, Station));
       return events;
     }
 
-    public DateTime TimeAfterDwellTime() {
-      DateTime fstDwellTime = DateTime.AddSeconds(DwellTime());
-      DateTime expectedDeparture = fstDwellTime.AddSeconds(sndDwellTime(fstDwellTime));
+    public DateTime TimeAfterDwellTime(Uithoflijn uithoflijn) {
+      DateTime fstDwellTime = DateTime.AddSeconds(DwellTime(uithoflijn));
+      DateTime expectedDeparture = fstDwellTime.AddSeconds(sndDwellTime(fstDwellTime, uithoflijn));
       return expectedDeparture;
     }
 
-    public int DwellTime() {
-      int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(DateTime, 1),
+    public int DwellTime(Uithoflijn uithoflijn) {
+      int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(DateTime, 1, uithoflijn),
                                                      Tram.PassengersOut(DateTime));
       // LogDwellTime(dwellTime);
       return dwellTime;
     }
 
-    public int sndDwellTime(DateTime dt) {
-      int dwellTime = Probabilities.CalcSecondDwellingTime(Tram.PassengersIn(dt, 2));
+    public int sndDwellTime(DateTime dt, Uithoflijn uithoflijn) {
+      int dwellTime = Probabilities.CalcSecondDwellingTime(Tram.PassengersIn(dt, 2, uithoflijn));
       int extraTime;
       int diff = (int)ScheduleCheck(dt, dwellTime);
 

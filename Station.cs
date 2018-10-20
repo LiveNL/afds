@@ -29,7 +29,7 @@ namespace afds {
       return stations[next];
     }
 
-    public int WaitingPeople() {
+    public int WaitingPeople(Uithoflijn uithoflijn) {
       DateTime then;
       DateTime now = LastArrivalEvent.DateTime;
       DateTime timeIs715 = new DateTime(1, 1, 1, 7, 15, 0);

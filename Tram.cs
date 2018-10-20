@@ -20,12 +20,12 @@ namespace afds {
       Rounds = 0;
     }
 
-    public int PassengersIn(DateTime dt, int dwellTime) {
+    public int PassengersIn(DateTime dt, int dwellTime, Uithoflijn uithoflijn) {
       if (Station.Number == 666) { return 0; }
       int waiting;
 
       if (dwellTime == 1) {
-        waiting = Station.WaitingPeople();
+        waiting = Station.WaitingPeople(uithoflijn);
       } else {
         waiting = Station.WaitingPeople2(dt);
       }
@@ -62,7 +62,6 @@ namespace afds {
       int wantOut        = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
       int p              = Passengers;
       Passengers         = Passengers - wantOut;
-      // LogPassengersOut(dt, stationName, p, wantOut);
       return wantOut;
     }
 
@@ -86,7 +85,7 @@ namespace afds {
       return trams[next];
     }
 
-    public void LogPassengersOut(DateTime dt, string stationName, int p, int wantOut) {
+    public void LogPassengersOut(DateTime dt, int stationName, int p, int wantOut) {
       Console.WriteLine("{0} : tram {1,-2} at {2,-2} : {3, -20} - {4,-3} passengers : {5,-3} go out, {6,-3} left",
           dt, Number, Station.Number, stationName, p, wantOut, Passengers);
     }

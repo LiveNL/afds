@@ -73,7 +73,7 @@ namespace afds {
 
           if (arrival.Station.Number == 666) { return events; }
 
-          return arrival.ScheduleDeparture(events);
+          return arrival.ScheduleDeparture(events, uithoflijn);
 
 
         case 2: // station check
