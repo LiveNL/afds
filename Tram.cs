@@ -6,12 +6,16 @@ namespace afds {
     public int      Passengers        { get; set; }
     public Station  Station           { get; set; }
     public Station  LastStation       { get; set; }
+    public DateTime Start             { get; set; }
+    public int      Schedule          { get; set; }
+    public int      Rounds            { get; set; }
 
     public Tram(int i, Station station) {
       Number = i;
       Passengers = 0;
       Station = station;
       LastStation = station;
+      Rounds = 0;
     }
 
     public int PassengersIn(DateTime dt, int dwellTime) {
@@ -46,7 +50,7 @@ namespace afds {
       int wantOut        = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
       int p              = Passengers;
       Passengers         = Passengers - wantOut;
-      // LogPassengersOut(dt, stationName, p, wantOut, Passengers);
+      // LogPassengersOut(dt, stationName, p, wantOut);
       return wantOut;
     }
 
@@ -70,7 +74,7 @@ namespace afds {
       return trams[next];
     }
 
-    public void LogPassengersOut(DateTime dt, string stationName, int p, int wantOut, int Passengers) {
+    public void LogPassengersOut(DateTime dt, string stationName, int p, int wantOut) {
       Console.WriteLine("{0} : tram {1,-2} at {2,-2} : {3, -20} - {4,-3} passengers : {5,-3} go out, {6,-3} left",
           dt, Number, Station.Number, stationName, p, wantOut, Passengers);
     }

@@ -12,9 +12,12 @@ namespace afds {
       State state           = new State();
       List<Event> events    = new List<Event>();
 
-      Tram    firstTram = uithoflijn.Trams[0];
-      Station depot     = firstTram.Station;
-      events.Add(new Event(DateTime.Parse("6:00:00 AM"), 3, firstTram, depot));
+      Tram    firstTram  = uithoflijn.Trams[0];
+      Station depot      = firstTram.Station;
+      DateTime start     = DateTime.Parse("6:00:00 AM");
+      firstTram.Start    = start;
+      firstTram.Rounds   = 0;
+      events.Add(new Event(start, 3, firstTram, depot));
 
       bool endCondition = false;
       while (endCondition == false) {

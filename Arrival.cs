@@ -9,7 +9,6 @@ namespace afds {
     public Tram     Tram     { get; set; }
 
     public int DepartureEventType = 0;
-    public int Q                  = 300;
 
     public Arrival(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
@@ -37,20 +36,60 @@ namespace afds {
 
     public int sndDwellTime(DateTime dt) {
       int dwellTime = Probabilities.CalcSecondDwellingTime(Tram.PassengersIn(dt, 2));
-      int qTime = (int)extendedDwellTime(dt, dwellTime);
-      // LogDwellTime(qTime);
-      return dwellTime + qTime;
+      int extraTime;
+      int diff = (int)ScheduleCheck(dt, dwellTime);
+
+      DateTime totalDwellTimeSoFar = dt.AddSeconds(dwellTime);
+
+      if (diff > 0) {
+        // Tram is on time, diff just needs to be bigger than 180
+        if (diff > 180) {
+          extraTime = diff;
+          Console.WriteLine("ExtraTime: {0}", extraTime);
+        } else {
+          extraTime = (int)(DateTime.AddSeconds(180).Subtract(totalDwellTimeSoFar)).TotalSeconds;
+          Console.WriteLine("ExtraTime: {0}", extraTime);
+        }
+      } else if (diff < 0) {
+        // Tram is to late but needs to stand still 180 sec anyway
+        extraTime = (int)(DateTime.AddSeconds(180).Subtract(totalDwellTimeSoFar)).TotalSeconds;
+        Console.WriteLine("ExtraTime: {0}", extraTime);
+      } else {
+        extraTime = 0;
+      }
+
+      return dwellTime + extraTime; //extraTime;
     }
 
-    public double extendedDwellTime(DateTime fst, int snd) {
+    public double ScheduleCheck(DateTime fst, int snd) {
       int[] qStations = { 8, 9, 17, 0 };
       if (qStations.Contains(Station.Number)) {
         DateTime after = fst.AddSeconds(snd);
         double totalDwellTime = after.Subtract(DateTime).TotalSeconds;
-        return Q - totalDwellTime;
-      } else {
-        return 0;
+
+        if (Tram.Rounds == 0) {
+          Tram.Rounds = Tram.Rounds + 1;
+          return 0;
+        } else if (after > Tram.Start.AddMinutes(Tram.Schedule)) {
+          double diff = (Tram.Start.AddMinutes(Tram.Schedule) - after).TotalSeconds;
+          Console.WriteLine("{0} : Schdule tram {1,-2} at {2,-2} is to late: {3}",
+              DateTime, Tram.Number, Station.Number, diff);
+
+          Tram.Start = Tram.Start.AddMinutes(Tram.Schedule);
+          Tram.Rounds = Tram.Rounds + 1;
+          return diff;
+        } else {
+          double diff = (Tram.Start.AddMinutes(Tram.Schedule) - after).TotalSeconds;
+          Console.WriteLine("{0} : Schdule tram {1,-2} at {2,-2} is on time: {3}",
+              DateTime, Tram.Number, Station.Number, diff);
+
+          Tram.Start = Tram.Start.AddMinutes(Tram.Schedule);
+          Tram.Rounds = Tram.Rounds + 1;
+          return diff;
+        }
       }
+
+      return 0;
     }
 
     public void LogDwellTime(int i) {
