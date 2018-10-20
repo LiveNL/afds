@@ -31,6 +31,7 @@ namespace afds {
       int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(DateTime, 1),
                                                      Tram.PassengersOut(DateTime));
       // LogDwellTime(dwellTime);
+      
       return dwellTime;
     }
 

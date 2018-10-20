@@ -27,3 +27,8 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+.vs/afds/DesignTimeBuild/.dtbcache
+.vs/afds/v15/Server/sqlite3/db.lock
+.vs/afds/v15/Server/sqlite3/storage.ide
+.vs/afds/v15/Server/sqlite3/storage.ide-wal
+.vs/afds/v15/Server/sqlite3/storage.ide-shm

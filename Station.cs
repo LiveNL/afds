@@ -5,6 +5,7 @@ namespace afds {
   public class Station {
     public int   Number             { get; set; }
     public int   Waiting            { get; set; }
+    public List<DateTime> WaitingList { get; set; }
     public Event LastDepartureEvent { get; set; }
     public Event LastArrivalEvent   { get; set; }
     public Tram  Tram               { get; set; }
@@ -39,14 +40,18 @@ namespace afds {
         then = now.AddMinutes(-15);
       } else { return 0; }
 
-      int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      List<DateTime> passengers = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      WaitingList.AddRange(passengers);
+      int p = passengers.Count;
       Waiting = Waiting + p;
       return Waiting;
     }
 
     public int WaitingPeople2(DateTime now) {
       DateTime then = LastArrivalEvent.DateTime;
-      int p = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      List<DateTime> passengers = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      WaitingList.AddRange(passengers);
+      int p = passengers.Count;
       Waiting = Waiting + p;
       return Waiting;
     }

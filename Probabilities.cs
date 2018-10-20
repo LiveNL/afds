@@ -25,8 +25,6 @@ namespace afds {
         {
             //Initializing global variables.
             random = new MersenneTwister(12);
-            // TODO: fix extra station 666 (as the bus has only 12)
-            // TODO: remove 666, just turn around
             Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135 };
             Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113 };
             const string Filepath = "./rates_a.csv";
@@ -64,13 +62,14 @@ namespace afds {
             else return (int)gamma;
         }
 
-        public static int GeneratePassengerArrivals(DateTime begin, DateTime end, double[] rates)
+        public static List<DateTime> GeneratePassengerArrivals(DateTime begin, DateTime end, double[] rates)
         {
-            int res = 0;
+            //int res = 0;
+            List<DateTime> passengers = new List<DateTime>();
             int begin_i = TimeToIndex(begin);
             int end_i = TimeToIndex(end);
             double seconds = begin.Second + (60.0 * begin.Minute);
-            if (rates[begin_i] == 0) return 0;
+            if (rates[begin_i] == 0) return new List<DateTime>();
             int j = begin_i;
             while (seconds <= (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour))
             {
@@ -81,7 +80,8 @@ namespace afds {
                     double end_time = (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour);
                     double fraction = (end_time - seconds) / exp;
                     if (fraction >= random.NextDouble())
-                        res++;
+                        passengers.Add(begin.AddSeconds(seconds));
+                        //res++;
                     break;
                 }
 
@@ -90,16 +90,20 @@ namespace afds {
                     j++;
                     double goto_time = (double)((int)(seconds + exp) / 900) * 900.0;
                     double fraction = (goto_time - seconds) / exp;
-                    if (fraction < random.NextDouble())
-                        res--;
                     seconds = goto_time;
+                    if (fraction >= random.NextDouble())
+                        passengers.Add(begin.AddSeconds(seconds));
+                    seconds = goto_time;
+                    continue;
                 }
 
-                res++;
+                passengers.Add(begin.AddSeconds(seconds));
+                //res++;
                 seconds += exp;
             }
 
-            return res;
+            return passengers;
+            //return res;
         }
 
         public static int CalcExit(DateTime time, string stop, char dir, int occupation)
@@ -171,7 +175,7 @@ namespace afds {
             //21:15-21:29 -> 61
             //exception: 21:30 -> 61
             DateTime quarter = time.AddMinutes(-(time.Minute % 15));
-            TimeSpan diff = quarter - new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 6, 0, 0);
+            TimeSpan diff = quarter.TimeOfDay - new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 6, 0, 0).TimeOfDay;
             int res = (int)diff.TotalMinutes / 15;
             return res >= 61 ? 61 : res;
         }
