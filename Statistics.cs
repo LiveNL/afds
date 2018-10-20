@@ -44,6 +44,7 @@ namespace afds {
             double avg_wait = _WaitingTime / _Passengers;
             res += "The average waiting time is: " + avg_wait.ToString() + " seconds.\n";
             res += "The maximum waiting time is: " + _MaxWait.ToString() + " seconds.\n";
+            res += "The total number of passengers is: " + _Passengers.ToString() + " people.\n";
             return(res);
         }
     }
