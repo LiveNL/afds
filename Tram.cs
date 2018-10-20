@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace afds {
   public class Tram {
@@ -36,6 +38,14 @@ namespace afds {
       }
 
       Station.Waiting = waiting - newPassengers;
+      Statistics.Passengers = newPassengers;
+      if (dwellTime == 1) {
+      var timestamps = Station.WaitingList.Take(newPassengers);
+      var diff = timestamps.Select(i => (i.TimeOfDay - dt.TimeOfDay).Milliseconds / 1000.0);
+      Statistics.MaxWait = diff.Max();
+      Statistics.WaitingTime = diff.Sum();
+      }
+      Station.WaitingList.RemoveRange(0, newPassengers);
       Passengers      = Passengers + newPassengers;
       return newPassengers;
     }

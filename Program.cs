@@ -8,6 +8,7 @@ namespace afds {
   class Program {
     static void Main(string[] args) {
       Probabilities.InitProbabilities();
+      Statistics.InitStatistics();
       Uithoflijn uithoflijn = new Uithoflijn();
       State state           = new State();
       List<Event> events    = new List<Event>();
@@ -30,6 +31,7 @@ namespace afds {
         };
       }
 
+      Console.Write(Statistics.Results());
       (new Report()).Print(uithoflijn, state);
     }
 
