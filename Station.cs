@@ -42,6 +42,7 @@ namespace afds {
       } else { return 0; }
 
       List<DateTime> passengers = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      // Console.WriteLine("PASSENGERS: {0} at Station: {1}", passengers.Count, Number);
       WaitingList.AddRange(passengers);
       int p = passengers.Count;
       Waiting = Waiting + p;

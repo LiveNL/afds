@@ -7,7 +7,7 @@ namespace afds {
     // There are 9 stations, with two sides, therefore 18 are created
     // Next to that there are 27 trams (atm), 13 double ones, 1 stand-by
     public int STATIONS = 19; // 18 + 1 (depot)
-    public int TRAMS    = 4;
+    public int TRAMS    = 13;
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -114,7 +114,7 @@ namespace afds {
             addTram.ScheduleAddTramEvent(events, uithoflijn, 900);
           } else if (DateTime.Parse("7:00:00 AM") <= e.DateTime && e.DateTime <= DateTime.Parse("7:00:00 PM")) {
             addTram.ScheduleNewTram(e, events, uithoflijn);
-            addTram.ScheduleAddTramEvent(events, uithoflijn, 180);
+            addTram.ScheduleAddTramEvent(events, uithoflijn, 240);
           }
           return events;
 

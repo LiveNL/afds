@@ -21,9 +21,9 @@ namespace afds {
       StationCheck stationCheck = new StationCheck(e, firstStation, Tram);
 
       if (stationCheck.EmptyNextStation(uithoflijn)) {
-        Console.WriteLine("First DT: {0}", DateTime);
         Tram.Start = DateTime;
         Tram.Schedule = 20;
+        Console.WriteLine("First DT: {0}, Schedule: {1}", Tram.Start, Tram.Schedule);
         return stationCheck.ScheduleArrival(e, events);
       } else {
         return stationCheck.ScheduleStationCheck(events, uithoflijn);

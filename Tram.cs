@@ -46,7 +46,7 @@ namespace afds {
 
       if (dwellTime == 1 && newPassengers > 0) {
         var timestamps = Station.WaitingList.Take(newPassengers);
-        var diff = timestamps.Select(i => (i.TimeOfDay - dt.TimeOfDay).Seconds);
+        var diff = timestamps.Select(i => (i.TimeOfDay - dt.TimeOfDay).Duration().Seconds);
         Statistics.MaxWait = diff.Max();
         Statistics.WaitingTime = diff.Sum();
       }

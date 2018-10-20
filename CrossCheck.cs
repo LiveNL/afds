@@ -26,7 +26,7 @@ namespace afds {
     }
 
     public List<Event> ScheduleCrossOpen(List<Event> events) {
-      events.Add(new Event(DateTime.AddSeconds(60), 5, Tram, Station));
+      events.Add(new Event(DateTime.AddSeconds(0), 5, Tram, Station));
       return events;
     }
 

@@ -26,7 +26,7 @@ namespace afds {
     }
 
     public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {
-      DateTime newCheckTime  = DateTime.AddSeconds(5);
+      DateTime newCheckTime  = DateTime.AddSeconds(10);
       Event    newCheckEvent = new Event(newCheckTime, 2, Tram, Station);
       events.Add(newCheckEvent);
       return events;

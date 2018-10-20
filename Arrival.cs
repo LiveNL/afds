@@ -31,7 +31,6 @@ namespace afds {
       int dwellTime = Probabilities.CalcDwellingTime(Tram.PassengersIn(DateTime, 1),
                                                      Tram.PassengersOut(DateTime));
       // LogDwellTime(dwellTime);
-      
       return dwellTime;
     }
 
@@ -41,11 +40,12 @@ namespace afds {
       int diff = (int)ScheduleCheck(dt, dwellTime);
 
       DateTime totalDwellTimeSoFar = dt.AddSeconds(dwellTime);
+      int sec = (int)totalDwellTimeSoFar.Subtract(DateTime).TotalSeconds;
 
       if (diff > 0) {
         // Tram is on time, diff just needs to be bigger than 180
         if (diff > 180) {
-          extraTime = diff;
+          extraTime = diff - sec;
           Console.WriteLine("ExtraTime: {0}", extraTime);
         } else {
           extraTime = (int)(DateTime.AddSeconds(180).Subtract(totalDwellTimeSoFar)).TotalSeconds;
@@ -65,14 +65,15 @@ namespace afds {
     public double ScheduleCheck(DateTime fst, int snd) {
       int[] qStations = { 8, 9, 17, 0 };
       if (qStations.Contains(Station.Number)) {
-        DateTime after = fst.AddSeconds(snd);
-        double totalDwellTime = after.Subtract(DateTime).TotalSeconds;
+        // DateTime after = fst.AddSeconds(snd);
+        // double totalDwellTime = after.Subtract(DateTime).TotalSeconds;
+        // Console.WriteLine("TOTAL DWELLTIME: {0}", totalDwellTime);
 
         if (Tram.Rounds == 0) {
           Tram.Rounds = Tram.Rounds + 1;
           return 0;
-        } else if (after > Tram.Start.AddMinutes(Tram.Schedule)) {
-          double diff = (Tram.Start.AddMinutes(Tram.Schedule) - after).TotalSeconds;
+        } else if (DateTime > Tram.Start.AddMinutes(Tram.Schedule)) {
+          double diff = (Tram.Start.AddMinutes(Tram.Schedule) - DateTime).TotalSeconds;
           Console.WriteLine("{0} : Schdule tram {1,-2} at {2,-2} is to late: {3}",
               DateTime, Tram.Number, Station.Number, diff);
 
@@ -80,7 +81,7 @@ namespace afds {
           Tram.Rounds = Tram.Rounds + 1;
           return diff;
         } else {
-          double diff = (Tram.Start.AddMinutes(Tram.Schedule) - after).TotalSeconds;
+          double diff = (Tram.Start.AddMinutes(Tram.Schedule) - DateTime).TotalSeconds;
           Console.WriteLine("{0} : Schdule tram {1,-2} at {2,-2} is on time: {3}",
               DateTime, Tram.Number, Station.Number, diff);
 
