@@ -17,7 +17,8 @@ namespace afds {
     }
 
     public bool CrossIsOpen(Uithoflijn uithoflijn) {
-      if (Station.Number == 8) {
+      int[] crossStations = { 7, 8, 9, 10 };
+      if (crossStations.Contains(Station.Number)) {
         return uithoflijn.Crosses[0].Open;
       } else {
         return uithoflijn.Crosses[1].Open;

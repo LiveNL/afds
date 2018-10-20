@@ -89,11 +89,12 @@ namespace afds {
             }
           }
 
-          int[] crossStations = { 9, 0 };
-          if (stationToCheck.Tram == null) {
-            return stationCheck.ScheduleArrival(e, events);
-          } else if (crossStations.Contains(stationToCheck.Number)) { // and implicitly isn't empty
+          if (stationToCheck.Number == 0 || stationToCheck.Number == 9) {
             return stationCheck.ScheduleCrossCheck(events);
+          } else if (tram.LastStation.Number == 8 || tram.LastStation.Number == 17) {
+            return stationCheck.ScheduleCrossCheck(events);
+          } else if (stationToCheck.Tram == null) {
+            return stationCheck.ScheduleArrival(e, events);
           } else {
             return stationCheck.ScheduleStationCheck(events, uithoflijn);
           }
@@ -125,6 +126,14 @@ namespace afds {
             crossCheck.ScheduleArrival(events, uithoflijn.Stations[0]);
             uithoflijn.Crosses[1].Open = false; // for 1 minute
             return crossCheck.ScheduleCrossOpen(events);
+          } else if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 8) {
+            crossCheck.ScheduleArrival(events, uithoflijn.Stations[10]);
+            uithoflijn.Crosses[0].Open = false; // for 1 minute
+            return crossCheck.ScheduleCrossOpen(events);
+          } else if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 17) {
+            crossCheck.ScheduleArrival(events, uithoflijn.Stations[1]);
+            uithoflijn.Crosses[1].Open = false; // for 1 minute
+            return crossCheck.ScheduleCrossOpen(events);
           } else {
             return crossCheck.ScheduleStationCheck(events, uithoflijn);
           }
@@ -132,7 +141,8 @@ namespace afds {
 
           case 5: // reopen cross
             LogEvent(e, tram, e.Station);
-            if (e.Station.Number == 7) {
+            int[] crossStations = { 7, 8, 9, 10 };
+            if (crossStations.Contains(e.Station.Number)) {
               uithoflijn.Crosses[0].Open = true;
             } else {
               uithoflijn.Crosses[1].Open = true;

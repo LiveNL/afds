@@ -36,16 +36,16 @@ namespace afds {
       }
 
       Station.Waiting = waiting - newPassengers;
-      Passengers = Passengers + newPassengers;
+      Passengers      = Passengers + newPassengers;
       return newPassengers;
     }
 
     public int PassengersOut(DateTime dt) {
       if (Station.Number == 666) { return Passengers; }
       string stationName = Station.StationDict()[Station.Number];
-      int wantOut = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
-      int p = Passengers;
-      Passengers = Passengers - wantOut;
+      int wantOut        = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
+      int p              = Passengers;
+      Passengers         = Passengers - wantOut;
       // LogPassengersOut(dt, stationName, p, wantOut, Passengers);
       return wantOut;
     }
