@@ -17,9 +17,10 @@ namespace afds {
     }
 
     public List<Event> ScheduleNewTram(Event e, List<Event> events, Uithoflijn uithoflijn) {
-      StationCheck stationCheck = new StationCheck(e, Tram.Station, Tram);
+      Station firstStation = uithoflijn.Stations[0];
+      StationCheck stationCheck = new StationCheck(e, firstStation, Tram);
 
-      if (stationCheck.EmptyStation(uithoflijn)) {
+      if (stationCheck.EmptyNextStation(uithoflijn)) {
         return stationCheck.ScheduleArrival(e, events);
       } else {
         return stationCheck.ScheduleStationCheck(events, uithoflijn);
@@ -30,7 +31,7 @@ namespace afds {
       Tram prevTram = Tram.PrevTram(uithoflijn.Trams);
 
       if (prevTram.Station?.Number == 666) {
-        events.Add(new Event(DateTime.AddSeconds(s), 3, prevTram));
+        events.Add(new Event(DateTime.AddSeconds(s), 3, prevTram, Station));
       }
 
       return events;

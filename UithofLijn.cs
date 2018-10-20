@@ -41,48 +41,42 @@ namespace afds {
 
       switch (eventType) {
         case 0: // departure
-          Station departureStation = tram.Station;
+          Station departureStation = e.Station;
           LogEvent(e, tram, departureStation);
           Departure departure = new Departure(e.DateTime, departureStation, tram);
 
           if (departureStation.Number == 8 && (departure.CrossIsOpen(uithoflijn) == false)){
-            return departure.ScheduleDeparture(events);
+            return departure.ScheduleStationCheck(events, uithoflijn);
           }
 
-          tram.LastStation = departureStation;
-          tram.Station = null;
-
+          tram.LastStation                     = departureStation;
+          tram.Station                         = null;
           departure.Station.LastDepartureEvent = e;
-          departure.Station.Tram = null;
+          departure.Station.Tram               = null;
 
           return departure.ScheduleStationCheck(events, uithoflijn);
 
+
         case 1: // arrival
-          Station arrivalStation = tram.LastStation.NextStation(uithoflijn.Stations);
+          Station arrivalStation = e.Station;
           LogEvent(e, tram, arrivalStation);
           Arrival arrival = new Arrival(e, arrivalStation, tram);
 
-          tram.Station = arrivalStation;
-          tram.LastStation = arrivalStation;
-
+          tram.Station                     = arrivalStation;
+          tram.LastStation                 = arrivalStation;
           arrival.Station.LastArrivalEvent = e;
-          arrival.Station.Tram = tram;
+          arrival.Station.Tram             = tram;
 
           return arrival.ScheduleDeparture(events);
 
-        case 2: // station check
-          Station stationToCheck;
-          if (tram.LastStation.Number == 8) {
-            stationToCheck = uithoflijn.Stations[10];
-          } else {
-            stationToCheck = tram.LastStation.NextStation(uithoflijn.Stations);
-          }
 
+        case 2: // station check
+          Station stationToCheck = e.Station;
           LogEvent(e, tram, stationToCheck);
           StationCheck stationCheck = new StationCheck(e, stationToCheck, tram);
 
-          if (stationCheck.EmptyStation(uithoflijn)) {
-            return stationCheck.ScheduleArrival(stationToCheck, e, events);
+          if (stationToCheck.Tram == null) {
+            return stationCheck.ScheduleArrival(e, events);
           } else if (stationToCheck.Number == 8) { // and implicitly isn't empty
             return stationCheck.ScheduleCrossCheck(events);
           } else {
@@ -105,17 +99,19 @@ namespace afds {
           }
           return events;
 
+
         case 4: // cross check
           LogEvent(e, tram, tram.LastStation);
           CrossCheck crossCheck = new CrossCheck(e, tram.LastStation, tram);
 
           if (crossCheck.CrossIsOpen(uithoflijn)) {
-            crossCheck.ScheduleArrival(uithoflijn.Stations[9], e, events);
-            uithoflijn.Crosses[0].Open = false;
+            crossCheck.ScheduleArrival(events, uithoflijn.Stations[9]);
+            uithoflijn.Crosses[0].Open = false; // for 1 minute
             return crossCheck.ScheduleCrossOpen(events);
           } else {
             return crossCheck.ScheduleStationCheck(events, uithoflijn);
           }
+
 
           case 5: // reopen cross
             LogEvent(e, tram, tram.LastStation);
@@ -147,18 +143,6 @@ namespace afds {
       // Console.WriteLine("Station: {0}", station.Number);
       Console.WriteLine("{0} : {1} tram {2,-2} at {3,-2} : {4}",
         e.DateTime, eventText, tram.Number, station.Number, station.StationDict()[station.Number]);
-    }
-
-    public void Order(Uithoflijn uithoflijn) {
-      Console.WriteLine("Order:");
-      foreach (Tram tram in uithoflijn.Trams) {
-        Console.WriteLine("Tram NR: {0,-2} | Passengers {1,-4} | Station: {2,-2} | {3} ",
-            tram.Number, tram.Passengers, tram.LastStation.Number, tram.GetHashCode());
-      }
-    }
-
-    public void LogTramPassengers(Tram tram) {
-      Console.WriteLine("tram {0} : {1} people", tram.Number, tram.Passengers);
     }
   }
 }

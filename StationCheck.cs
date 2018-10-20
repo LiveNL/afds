@@ -17,28 +17,24 @@ namespace afds {
     }
 
     public List<Event> ScheduleArrival(Event e, List<Event> events) {
-      events.Add(NewArrivalEvent(e));
+      events.Add(new Event(e.DateTime, ArrivalEventType, Tram, Station));
       return events;
     }
 
-    public bool EmptyStation(Uithoflijn uithoflijn) {
+    public bool EmptyNextStation(Uithoflijn uithoflijn) {
       return Station.NextStation(uithoflijn.Stations).Tram == null;
     }
 
     public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {
       DateTime newCheckTime  = DateTime.AddSeconds(5);
-      Event    newCheckEvent = new Event(newCheckTime, 2, Tram);
+      Event    newCheckEvent = new Event(newCheckTime, 2, Tram, Station);
       events.Add(newCheckEvent);
       return events;
     }
 
     public List<Event> ScheduleCrossCheck(List<Event> events) {
-      events.Add(new Event(DateTime, 4, Tram));
+      events.Add(new Event(DateTime, 4, Tram, Station));
       return events;
-    }
-
-    public Event NewArrivalEvent(Event e) {
-      return new Event(e.DateTime, ArrivalEventType, Tram);
     }
   }
 }

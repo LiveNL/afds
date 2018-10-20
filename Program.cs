@@ -12,8 +12,9 @@ namespace afds {
       State state           = new State();
       List<Event> events    = new List<Event>();
 
-      Tram firstTram = uithoflijn.Trams[0];
-      events.Add(new Event(DateTime.Parse("6:00:00 AM"), 3, firstTram));
+      Tram    firstTram = uithoflijn.Trams[0];
+      Station depot     = firstTram.Station;
+      events.Add(new Event(DateTime.Parse("6:00:00 AM"), 3, firstTram, depot));
 
       bool endCondition = false;
       while (endCondition == false) {
@@ -23,8 +24,8 @@ namespace afds {
         events = eventRoutine(uithoflijn, state, nextEvent, events);
 
         // Check if loop/simulation should be ended
-        if (!events.Any() || state.SimulationClock > DateTime.Parse("9:30:00 PM")) {
-        // if (!events.Any() || state.SimulationClock > DateTime.Parse("10:45:00 AM")) {
+        // if (!events.Any() || state.SimulationClock > DateTime.Parse("9:30:00 PM")) {
+        if (!events.Any() || state.SimulationClock > DateTime.Parse("10:45:00 AM")) {
           endCondition = true;
         };
       }

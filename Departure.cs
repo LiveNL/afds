@@ -19,7 +19,10 @@ namespace afds {
     }
 
     public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {
-      events.Add(NewCheckStationEvent(uithoflijn));
+      DateTime dtAfterTt         = DateTime.AddSeconds(TravelTime());
+      Station station            = StationToCheck(uithoflijn);
+      Event newCheckStationEvent = new Event(dtAfterTt, StationCheckEventType, Tram, station);
+      events.Add(newCheckStationEvent);
       return events;
     }
 
@@ -31,14 +34,12 @@ namespace afds {
       }
     }
 
-    public List<Event> ScheduleDeparture(List<Event> events) {
-      events.Add(new Event(DateTime.AddSeconds(1), DepartureEventType, Tram));
-      return events;
-    }
-
-    public Event NewCheckStationEvent(Uithoflijn uithoflijn) {
-      DateTime timeAfterTravelTime = DateTime.AddSeconds(TravelTime());
-      return new Event(timeAfterTravelTime, StationCheckEventType, Tram);
+    public Station StationToCheck(Uithoflijn uithoflijn) {
+      if (Station.Number == 8) {
+        return uithoflijn.Stations[10];
+      } else {
+        return Tram.LastStation.NextStation(uithoflijn.Stations);
+      }
     }
 
     public int TravelTime() {

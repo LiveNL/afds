@@ -17,10 +17,9 @@ namespace afds {
     }
 
     public List<Event> ScheduleDeparture(List<Event> events) {
-      events.Add(new Event(TimeAfterDwellTime(), DepartureEventType, Tram));
+      events.Add(new Event(TimeAfterDwellTime(), DepartureEventType, Tram, Station));
       return events;
     }
-
 
     public DateTime TimeAfterDwellTime() {
       DateTime fstDwellTime = DateTime.AddSeconds(DwellTime());

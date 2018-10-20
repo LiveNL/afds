@@ -27,12 +27,12 @@ namespace afds {
     }
 
     public List<Event> ScheduleCrossOpen(List<Event> events) {
-      events.Add(new Event(DateTime.AddSeconds(60), 5, Tram));
+      events.Add(new Event(DateTime.AddSeconds(60), 5, Tram, Station));
       return events;
     }
 
-    public List<Event> ScheduleArrival(Event e, List<Event> events) {
-      events.Add(NewArrivalEvent(e));
+    public List<Event> ScheduleArrival(List<Event> events, Station newStation) {
+      events.Add(new Event(DateTime, ArrivalEventType, Tram, newStation));
       return events;
     }
 
@@ -42,18 +42,14 @@ namespace afds {
 
     public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {
       DateTime newCheckTime  = DateTime.AddSeconds(5);
-      Event    newCheckEvent = new Event(newCheckTime, 2, Tram);
+      Event    newCheckEvent = new Event(newCheckTime, 2, Tram, Station);
       events.Add(newCheckEvent);
       return events;
     }
 
     public List<Event> ScheduleCrossCheck(List<Event> events) {
-      events.Add(new Event(DateTime, 4, Tram));
+      events.Add(new Event(DateTime, 4, Tram, Station));
       return events;
-    }
-
-    public Event NewArrivalEvent(Event e) {
-      return new Event(e.DateTime, ArrivalEventType, Tram);
     }
   }
 }
