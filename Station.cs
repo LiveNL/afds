@@ -16,6 +16,7 @@ namespace afds {
       LastDepartureEvent = null;
       LastArrivalEvent   = null;
       Tram               = null;
+      WaitingList        = new List<DateTime>();
     }
 
     public Station NextStation(Station[] stations) {
