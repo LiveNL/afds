@@ -31,9 +31,9 @@ namespace afds {
             Rates_a = ReadCsv(Filepath);
             const string Filepath1 = "./rates_b.csv";
             Rates_b = ReadCsv(Filepath1);
-            const string Filepath2 = "./exit_rates_a.csv";
+            const string Filepath2 = "./new_exit_rates_a.csv";
             Exit_rates_a = ReadCsv(Filepath2);
-            const string Filepath3 = "./exit_rates_b.csv";
+            const string Filepath3 = "./new_exit_rates_b.csv";
             Exit_rates_b = ReadCsv(Filepath3);
         }
 
@@ -50,7 +50,7 @@ namespace afds {
             double min = 0.8 * mean;
             double gamma = GenerateGammaValue(2, mean / 2);
             if (gamma < min) return (int)min;
-            else return (int)gamma;
+            else return (int)gamma + CalcDoorJam(1);
         }
 
         public static int CalcSecondDwellingTime(int passengers_in)
@@ -69,10 +69,20 @@ namespace afds {
             int begin_i = TimeToIndex(begin);
             int end_i = TimeToIndex(end);
             double seconds = begin.Second + (60.0 * begin.Minute);
-            if (rates[begin_i] == 0) return new List<DateTime>();
+            if (rates[begin_i] == 0) {
+                double goto_time = (double)((int)(seconds) / 900) * 900.0;
+                seconds = goto_time;
+            }
             int j = begin_i;
-            while (seconds <= (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour))
+            while (seconds < (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour) && j <= 61)
             {
+                if (rates[j] == 0)
+                {
+                    double goto_time = (double)((int)(seconds) / 900) * 900.0 + 900.0;
+                    seconds = goto_time;
+                    j++;
+                    continue;
+                }
                 double exp = CalcExp(rates[j]);
 
                 if (seconds + exp > (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour))
@@ -81,7 +91,6 @@ namespace afds {
                     double fraction = (end_time - seconds) / exp;
                     if (fraction >= random.NextDouble())
                         passengers.Add(begin.AddSeconds(seconds));
-                        //res++;
                     break;
                 }
 
@@ -98,12 +107,10 @@ namespace afds {
                 }
 
                 passengers.Add(begin.AddSeconds(seconds));
-                //res++;
                 seconds += exp;
             }
 
             return passengers;
-            //return res;
         }
 
         public static int CalcExit(DateTime time, string stop, char dir, int occupation)
@@ -119,15 +126,22 @@ namespace afds {
 
             double mean;
             if (dir == 'a')
-                mean = Exit_rates_a[stop][TimeToIndex(time)];
+                mean = Exit_rates_a[stop][TimeToIndex(time)] * occupation;
             else
-                mean = Exit_rates_b[stop][TimeToIndex(time)];
+                mean = Exit_rates_b[stop][TimeToIndex(time)] * occupation;
 
-            double stdev = 0.6756 * mean;
+            double stdev = 0.06756 * mean;
             int norm = (int)CalcNormal(mean, stdev);
             if (norm > occupation)
                 return occupation;
             return norm > 0 ? norm : 0;
+        }
+
+        public static int CalcDoorJam(int x)
+        {
+            if (random.NextDouble() * 100 < x)
+                return 60;
+            else return 0; 
         }
 
         //The probability functions that are used in determining the random variables.
