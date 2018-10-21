@@ -31,9 +31,9 @@ namespace afds {
             Rates_a = ReadCsv(Filepath);
             const string Filepath1 = "./rates_b.csv";
             Rates_b = ReadCsv(Filepath1);
-            const string Filepath2 = "./exit_rates_a.csv";
+            const string Filepath2 = "./new_exit_rates_a.csv";
             Exit_rates_a = ReadCsv(Filepath2);
-            const string Filepath3 = "./exit_rates_b.csv";
+            const string Filepath3 = "./new_exit_rates_b.csv";
             Exit_rates_b = ReadCsv(Filepath3);
         }
 
@@ -74,7 +74,7 @@ namespace afds {
                 seconds = goto_time;
             }
             int j = begin_i;
-            while (seconds < (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour))
+            while (seconds < (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour) && j <= 61)
             {
                 if (rates[j] == 0)
                 {
@@ -126,11 +126,11 @@ namespace afds {
 
             double mean;
             if (dir == 'a')
-                mean = Exit_rates_a[stop][TimeToIndex(time)];
+                mean = Exit_rates_a[stop][TimeToIndex(time)] * occupation;
             else
-                mean = Exit_rates_b[stop][TimeToIndex(time)];
+                mean = Exit_rates_b[stop][TimeToIndex(time)] * occupation;
 
-            double stdev = 0.6756 * mean;
+            double stdev = 0.06756 * mean;
             int norm = (int)CalcNormal(mean, stdev);
             if (norm > occupation)
                 return occupation;
