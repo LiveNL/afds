@@ -65,12 +65,11 @@ namespace afds {
     public double ScheduleCheck(DateTime fst, int snd) {
       int[] qStations = { 8, 9, 17, 0 };
       if (qStations.Contains(Station.Number)) {
-        // DateTime after = fst.AddSeconds(snd);
-        // double totalDwellTime = after.Subtract(DateTime).TotalSeconds;
-        // Console.WriteLine("TOTAL DWELLTIME: {0}", totalDwellTime);
+        Statistics.DelayChecks = 1;
 
         if (Tram.Rounds == 0) {
           Tram.Rounds = Tram.Rounds + 1;
+          Statistics.Delay = 0;
           return 0;
         } else if (DateTime > Tram.Start.AddMinutes(Tram.Schedule)) {
           double diff = (Tram.Start.AddMinutes(Tram.Schedule) - DateTime).TotalSeconds;
@@ -79,6 +78,9 @@ namespace afds {
 
           Tram.Start = Tram.Start.AddMinutes(Tram.Schedule);
           Tram.Rounds = Tram.Rounds + 1;
+          double positive_delay = (diff * -1);
+          Statistics.MaxDelay = positive_delay;
+          Statistics.Delay = positive_delay;
           return diff;
         } else {
           double diff = (Tram.Start.AddMinutes(Tram.Schedule) - DateTime).TotalSeconds;
@@ -87,6 +89,7 @@ namespace afds {
 
           Tram.Start = Tram.Start.AddMinutes(Tram.Schedule);
           Tram.Rounds = Tram.Rounds + 1;
+          Statistics.Delay = 0;
           return diff;
         }
       }

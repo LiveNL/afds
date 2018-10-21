@@ -22,7 +22,7 @@ namespace afds {
 
       if (stationCheck.EmptyNextStation(uithoflijn)) {
         Tram.Start = DateTime;
-        Tram.Schedule = 20;
+        Tram.Schedule = 21;
         Console.WriteLine("First DT: {0}, Schedule: {1}", Tram.Start, Tram.Schedule);
         return stationCheck.ScheduleArrival(e, events);
       } else {

@@ -14,7 +14,7 @@ namespace afds {
             }
          }
         private static int _Passengers;
-        public static int Passengers { 
+        public static int Passengers {
             get {
                 return _Passengers;
             }
@@ -23,14 +23,32 @@ namespace afds {
             }
         }
         private static double _MaxWait;
-        public static double MaxWait { 
+        public static double MaxWait {
             get {
                 return _MaxWait;
-            }            
+            }
             set {
                 if (value > _MaxWait)
                     _MaxWait = value;
             }
+        }
+
+        private static double _Delay;
+        public static double Delay {
+          get { return _Delay; }
+          set { _Delay += value; }
+        }
+
+        private static double _DelayChecks;
+        public static double DelayChecks {
+          get { return _DelayChecks; }
+          set { _DelayChecks += value; }
+        }
+
+        private static double _MaxDelay;
+        public static double MaxDelay {
+          get { return _MaxDelay; }
+          set { if (value > _MaxDelay) _MaxDelay = value; }
         }
 
         public static void InitStatistics() {
@@ -45,6 +63,12 @@ namespace afds {
             res += "The average waiting time is: " + avg_wait.ToString() + " seconds.\n";
             res += "The maximum waiting time is: " + _MaxWait.ToString() + " seconds.\n";
             res += "The total number of passengers is: " + _Passengers.ToString() + " people.\n";
+
+            double avg_delay = _Delay / _DelayChecks;
+            res += "The average delay time is: " + Convert.ToInt32(avg_delay).ToString() + " seconds.\n";
+            res += "The maximum delay time is: " + _MaxDelay.ToString() + " seconds.\n";
+            res += "The total number of delayChecks is: " + _DelayChecks.ToString() + "\n";
+
             return(res);
         }
     }
