@@ -64,7 +64,6 @@ namespace afds {
 
         public static List<DateTime> GeneratePassengerArrivals(DateTime begin, DateTime end, double[] rates)
         {
-            //int res = 0;
             List<DateTime> passengers = new List<DateTime>();
             int begin_i = TimeToIndex(begin);
             int end_i = TimeToIndex(end);
@@ -90,7 +89,7 @@ namespace afds {
                     double end_time = (double)end.Second + 60.0 * end.Minute + 3600.0 * (end.Hour - begin.Hour);
                     double fraction = (end_time - seconds) / exp;
                     if (fraction >= random.NextDouble())
-                        passengers.Add(begin.AddSeconds(seconds));
+                        passengers.Add(begin.AddSeconds(seconds - (begin.Second + (60.0 * begin.Minute))));
                     break;
                 }
 
@@ -101,13 +100,13 @@ namespace afds {
                     double fraction = (goto_time - seconds) / exp;
                     seconds = goto_time;
                     if (fraction >= random.NextDouble())
-                        passengers.Add(begin.AddSeconds(seconds));
+                        passengers.Add(begin.AddSeconds(seconds - (begin.Second + (60.0 * begin.Minute))));
                     seconds = goto_time;
                     continue;
                 }
 
-                passengers.Add(begin.AddSeconds(seconds));
                 seconds += exp;
+                passengers.Add(begin.AddSeconds(seconds - (begin.Second + (60.0 * begin.Minute))));
             }
 
             return passengers;
