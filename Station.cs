@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace afds {
   public class Station {
@@ -28,18 +29,43 @@ namespace afds {
     public int WaitingPeople(Uithoflijn uithoflijn) {
       DateTime now = LastArrivalEvent.DateTime;
 
-      DateTime then;
-      if (LastDepartureEvent != null)  {
-        then = LastDepartureEvent.DateTime;
-      } else {
-        then = DateTime.Parse("6:00:00 AM");
-      }
+      DateTime then = LatestDeparture(uithoflijn);
 
       List<DateTime> passengers = Passengers(then, now);
       WaitingList.AddRange(passengers);
 
       Waiting = Waiting + passengers.Count;
       return Waiting;
+    }
+
+    DateTime LatestDeparture(Uithoflijn uithoflijn) {
+      if (!( new int[] {8, 9, 17, 0}.Contains(Number))) {
+        if (LastDepartureEvent != null)
+          return LastDepartureEvent.DateTime;
+        else return DateTime.Parse("6:00:00 AM");
+      }
+      else {
+        if (Number == 8 || Number == 9) {
+          if (uithoflijn.Stations[8].LastDepartureEvent != null && uithoflijn.Stations[9].LastDepartureEvent != null) {
+            if (uithoflijn.Stations[8].LastDepartureEvent.DateTime < uithoflijn.Stations[9].LastDepartureEvent.DateTime)
+              return uithoflijn.Stations[9].LastDepartureEvent.DateTime;
+            else return uithoflijn.Stations[8].LastDepartureEvent.DateTime;
+          }
+          else if (uithoflijn.Stations[8].LastDepartureEvent != null) return uithoflijn.Stations[8].LastDepartureEvent.DateTime;
+          else if (uithoflijn.Stations[9].LastDepartureEvent != null) return uithoflijn.Stations[9].LastDepartureEvent.DateTime;
+          else return DateTime.Parse("6:00:00 AM");
+        }
+        else {
+          if (uithoflijn.Stations[0].LastDepartureEvent != null && uithoflijn.Stations[17].LastDepartureEvent != null) {
+            if (uithoflijn.Stations[0].LastDepartureEvent.DateTime < uithoflijn.Stations[17].LastDepartureEvent.DateTime)
+              return uithoflijn.Stations[17].LastDepartureEvent.DateTime;
+            else return uithoflijn.Stations[0].LastDepartureEvent.DateTime;
+          }
+          else if (uithoflijn.Stations[0].LastDepartureEvent != null) return uithoflijn.Stations[0].LastDepartureEvent.DateTime;
+          else if (uithoflijn.Stations[17].LastDepartureEvent != null) return uithoflijn.Stations[17].LastDepartureEvent.DateTime;
+          else return DateTime.Parse("6:00:00 AM");
+        }
+      }
     }
 
     public int WaitingPeople2(DateTime now) {

@@ -35,6 +35,9 @@ namespace afds {
         newPassengers = space;
       }
 
+      if (space < waiting)
+        Console.WriteLine("{0} passengers could net get in at station {1}, at {2}", (waiting - space).ToString(), Station.StationDict()[Station.Number], dt.ToLongTimeString());
+
       Station.Waiting       = waiting - newPassengers;
       Statistics.Passengers = newPassengers;
       Passengers            = Passengers + newPassengers;
@@ -43,6 +46,12 @@ namespace afds {
         var timestamps         = Station.WaitingList.Take(newPassengers);
         var diff               = timestamps.Select(i => (i.TimeOfDay - dt.TimeOfDay).Duration().TotalSeconds);
         Statistics.MaxWait     = diff.Max();
+        if (diff.Max() > 1800.0) {
+          Console.WriteLine("Someone waited {0} seconds, got in the tram at station {1} at {2}", diff.Max().ToString(), Station.StationDict()[Station.Number], dt.ToLongTimeString());
+          foreach (Tram t in uithoflijn.Trams) {
+            Console.WriteLine("Tram {0} was last seen at {1}", t.Number, t.LastStation.Number);
+          }
+        }
         Statistics.WaitingTime = diff.Sum();
       }
 
