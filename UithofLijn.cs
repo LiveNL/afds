@@ -88,6 +88,11 @@ namespace afds {
           int check = stationToCheck.Number;
           CrossCheck stationCrossCheck = new CrossCheck(e, stationToCheck, tram);
 
+          bool A40SecondDistance;
+          if (stationToCheck.LastDepartureEvent != null) {
+             A40SecondDistance = (e.DateTime - stationToCheck.LastDepartureEvent.DateTime).TotalSeconds > 40;
+          } else { A40SecondDistance = true; }
+
           if (last == 8 && check == 10) {
             return stationCrossCheck.ScheduleCrossCheck(events, stationToCheck);
 
@@ -100,7 +105,7 @@ namespace afds {
           } else if (last == 16 && check == 17 && stationToCheck.Tram != null) {
             return stationCrossCheck.ScheduleCrossCheck(events, stationToCheck.NextStation(uithoflijn.Stations));
 
-          } else if (stationToCheck.Tram == null) {
+          } else if (stationToCheck.Tram == null && A40SecondDistance) {
             return stationCheck.ScheduleArrival(e, events);
           } else {
             return stationCheck.ScheduleStationCheck(events, e.Station);
