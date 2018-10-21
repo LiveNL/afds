@@ -9,6 +9,8 @@ namespace afds {
     public Tram     Tram     { get; set; }
 
     public int DepartureEventType = 0;
+    public int MinQ               = 180;
+    public int[] QStations        = { 8, 9, 17, 0 };
 
     public Arrival(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
@@ -29,7 +31,20 @@ namespace afds {
       int sndDwellTime             = SndDwellTime(dtAfterFstDwellTime, uithoflijn);
       DateTime dtAfterSndDwellTime = dtAfterFstDwellTime.AddSeconds(sndDwellTime);
 
-      return dtAfterSndDwellTime;
+      double extraTime             = ExtraTime(dtAfterSndDwellTime);
+      DateTime dtAfterExtraTime    = dtAfterSndDwellTime.AddSeconds(extraTime);
+
+      if (dtAfterExtraTime > Tram.Start) {
+        Statistics.MaxDelay = extraTime;
+        Statistics.Delay    = extraTime;
+      }
+
+      if (QStations.Contains(Station.Number)) {
+        UpdateTramSchedule();
+        UpdateStatistics();
+      }
+
+      return dtAfterExtraTime;
     }
 
     public int DwellTime(Uithoflijn uithoflijn) {
@@ -45,65 +60,53 @@ namespace afds {
       return dwellTime;
     }
 
-//    public int ExtraTime() {
-//      int extraTime;
-//      int diff = (int)ScheduleCheck(dt, dwellTime);
-//
-//      DateTime totalDwellTimeSoFar = dt.AddSeconds(dwellTime);
-//      int sec = (int)totalDwellTimeSoFar.Subtract(DateTime).TotalSeconds;
-//
-//      if (diff > 0) { // Tram is on time, diff just needs to be bigger than 180
-//        if (diff > 180) {
-//          extraTime = diff - sec;
-//        } else {
-//          extraTime = (int)(DateTime.AddSeconds(180).Subtract(totalDwellTimeSoFar)).TotalSeconds;
-//        }
-//      } else if (diff < 0) { // Tram is to late but needs to stand still 180 sec anyway
-//        if (diff < -180) {
-//          extraTime = 0;
-//        } else {
-//          extraTime = 180 - (diff * - 1);
-//        }
-//      } else { extraTime = 0; }
-//
-//      return dwellTime + extraTime; //extraTime;
-//    }
+    public double ExtraTime(DateTime dtAfterSndDwellTime) {
+      if (!QStations.Contains(Station.Number)) { return 0; }
+      if (Tram.Rounds == 0) { return 0; }
 
-//    public double ScheduleCheck(DateTime fst, int snd) {
-//      int[] qStations = { 8, 9, 17, 0 };
-//
-//      if (qStations.Contains(Station.Number)) {
-//        Statistics.DelayChecks = 1;
-//        double diff = (Tram.Start.AddMinutes(Tram.Schedule) - DateTime).TotalSeconds;
-//
-//        if (Tram.Rounds == 0) {
-//          Tram.Rounds = Tram.Rounds + 1;
-//          Statistics.Delay = 0;
-//          return 0;
-//        } else if (DateTime > Tram.Start.AddMinutes(Tram.Schedule)) {
-//          Console.WriteLine("{0} : Schdule tram {1,-2} at {2,-2} is to late: {3}", DateTime, Tram.Number, Station.Number, diff);
-//          Tram.Start = Tram.Start.AddMinutes(Tram.Schedule);
-//          Tram.Rounds = Tram.Rounds + 1;
-//
-//          // Statistics
-//          double positive_delay = (diff * -1);
-//          Statistics.MaxDelay = positive_delay;
-//          Statistics.Delay = positive_delay;
-//
-//          return diff;
-//        } else {
-//          Console.WriteLine("{0} : Schdule tram {1,-2} at {2,-2} is on time: {3}", DateTime, Tram.Number, Station.Number, diff);
-//
-//          // Statistics
-//          Tram.Start = Tram.Start.AddMinutes(Tram.Schedule);
-//          Tram.Rounds = Tram.Rounds + 1;
-//          Statistics.Delay = 0;
-//
-//          return diff;
-//        }
-//      }
-//      return 0;
-//    }
+      int dwellTimeSoFar = (int)dtAfterSndDwellTime.Subtract(DateTime).TotalSeconds;
+
+      // Tram is on time and dwellTime is more than minimum q, so just wait till next Scheduled time.
+      if (dtAfterSndDwellTime < Tram.Start && dwellTimeSoFar > MinQ) {
+        return (Tram.Start - dtAfterSndDwellTime).TotalSeconds;
+      }
+
+      // Tram is before schedule but still needs to wait at least a few seconds to have the minimum Q.
+      // Then it might still be on time, if the date time after the minimum wait is earlier than the schedule
+      if (dtAfterSndDwellTime < Tram.Start && dwellTimeSoFar < MinQ) {
+        int restMinQ         = MinQ - dwellTimeSoFar;
+        DateTime dtAfterMinQ = dtAfterSndDwellTime.AddSeconds(restMinQ);
+
+        // Still on time
+        if (dtAfterMinQ < Tram.Start) {
+          return (Tram.Start - dtAfterMinQ).TotalSeconds + restMinQ;
+        } else {
+          return (dtAfterMinQ - Tram.Start).TotalSeconds + restMinQ;
+        }
+      }
+
+      // Tram is too late and dwellTime is more than minimum q, so just leave directly.
+      if (dtAfterSndDwellTime > Tram.Start && dwellTimeSoFar > MinQ) {
+        return 0;
+      }
+
+      // Tram is too late and dwellTime is less than minimum q, so wait for the rest of minQ and then leave.
+      if (dtAfterSndDwellTime > Tram.Start && dwellTimeSoFar < MinQ) {
+        return MinQ - dwellTimeSoFar;
+      }
+
+      return 0;
+    }
+
+    public void UpdateTramSchedule() {
+      DateTime newScheduleStart = Tram.Start.AddMinutes(Tram.Schedule);
+      Tram.Start = newScheduleStart;
+    }
+
+    public void UpdateStatistics() {
+      Statistics.DelayChecks = 1;
+      Tram.Rounds            = Tram.Rounds + 1;
+    }
 
     public void LogDwellTime(int i) {
       Console.WriteLine("{0} : Dwelltm tram {2,-2} at {3,-2} : {1} sec",

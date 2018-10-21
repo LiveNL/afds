@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace afds {
   public class Tram {
-    public int      Number            { get; set; }
-    public int      Passengers        { get; set; }
-    public Station  Station           { get; set; }
-    public Station  LastStation       { get; set; }
-    public DateTime Start             { get; set; }
-    public int      Schedule          { get; set; }
-    public int      Rounds            { get; set; }
+    public int      Number      { get; set; }
+    public int      Passengers  { get; set; }
+    public Station  Station     { get; set; }
+    public Station  LastStation { get; set; }
+    public DateTime Start       { get; set; }
+    public int      Schedule    { get; set; }
+    public int      Rounds      { get; set; }
 
     public Tram(int i, Station station) {
       Number = i;
