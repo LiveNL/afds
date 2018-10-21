@@ -4,10 +4,16 @@ using System.Linq;
 
 namespace afds {
   public class Uithoflijn {
+
+    // Config
     // There are 9 stations, with two sides, therefore 18 are created
     // Next to that there are 27 trams (atm), 13 double ones, 1 stand-by
-    public int STATIONS = 19; // 18 + 1 (depot)
-    public int TRAMS    = 13;
+    public int STATIONS           = 19; // 18 + 1 (depot)
+    public int TRAMS              = 13;
+    public int EarlyTramsInterval = 900;
+    public int MaxFTramsInterval  = 300;
+    public int EarlySchedule      = 30;
+    public int MaxFSchedule       = 22;
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -75,6 +81,7 @@ namespace afds {
           StationCheck stationCheck = new StationCheck(e, stationToCheck, tram);
 
           if (e.DateTime > DateTime.Parse("7:00:00 PM")) {
+            tram.Schedule = EarlySchedule;
             if ((stationToCheck.Number == 17 || stationToCheck.Number == 0) && (tramsInDepot(uithoflijn) < 9)) {
               if (stationToCheck.Tram == null) {
                 return stationCheck.ScheduleRemoveTram(events, uithoflijn);
@@ -116,16 +123,16 @@ namespace afds {
           AddTram addTram = new AddTram(e, tram.Station, tram);
 
           if (TRAMS == 1) { // DEBUG
-            addTram.ScheduleNewTram(e, events, uithoflijn); return events;
+            addTram.ScheduleNewTram(e, events, uithoflijn, MaxFSchedule); return events;
           }
 
           if (e.DateTime < DateTime.Parse("7:00:00 AM")) {
-            addTram.ScheduleNewTram(e, events, uithoflijn);
-            addTram.ScheduleAddTramEvent(events, uithoflijn, 900);
+            addTram.ScheduleNewTram(e, events, uithoflijn, EarlySchedule);
+            addTram.ScheduleAddTramEvent(events, uithoflijn, EarlyTramsInterval);
 
           } else if (DateTime.Parse("7:00:00 AM") <= e.DateTime && e.DateTime <= DateTime.Parse("7:00:00 PM")) {
-            addTram.ScheduleNewTram(e, events, uithoflijn);
-            addTram.ScheduleAddTramEvent(events, uithoflijn, 240); // CONFIG
+            addTram.ScheduleNewTram(e, events, uithoflijn, MaxFSchedule);
+            addTram.ScheduleAddTramEvent(events, uithoflijn, MaxFTramsInterval);
           }
           return events;
 

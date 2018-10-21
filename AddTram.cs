@@ -11,22 +11,19 @@ namespace afds {
     public int StationCheckEventType = 2;
     public int AddTramEventType      = 3;
 
-    // Config
-    public int Schedule = 22;
-
     public AddTram(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
       Station = station;
       Tram = tram;
     }
 
-    public List<Event> ScheduleNewTram(Event e, List<Event> events, Uithoflijn uithoflijn) {
+    public List<Event> ScheduleNewTram(Event e, List<Event> events, Uithoflijn uithoflijn, int schedule) {
       Station firstStation = uithoflijn.Stations[0];
       StationCheck stationCheck = new StationCheck(e, firstStation, Tram);
 
       if (firstStation.Tram == null) {
         Tram.Start = DateTime;
-        Tram.Schedule = Schedule;
+        Tram.Schedule = schedule;
         return stationCheck.ScheduleArrival(e, events);
       } else {
         return stationCheck.ScheduleStationCheck(events, firstStation);
