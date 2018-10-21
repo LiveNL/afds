@@ -22,15 +22,9 @@ namespace afds {
 
     public int PassengersIn(DateTime dt, int dwellTime, Uithoflijn uithoflijn) {
       if (Station.Number == 666) { return 0; }
-      int waiting;
 
-      if (dwellTime == 1) {
-        waiting = Station.WaitingPeople(uithoflijn);
-      } else {
-        waiting = Station.WaitingPeople2(dt);
-      }
-
-      int space = 420 - Passengers;
+      int waiting       = WaitingPeople(dwellTime, uithoflijn, dt);
+      int space         = 420 - Passengers;
       int newPassengers = 0;
 
       if (space <= 0) {
@@ -41,23 +35,24 @@ namespace afds {
         newPassengers = space;
       }
 
-      Station.Waiting = waiting - newPassengers;
+      Station.Waiting       = waiting - newPassengers;
       Statistics.Passengers = newPassengers;
+      Passengers            = Passengers + newPassengers;
 
       if (dwellTime == 1 && newPassengers > 0) {
-        var timestamps = Station.WaitingList.Take(newPassengers);
-        var diff = timestamps.Select(i => (i.TimeOfDay - dt.TimeOfDay).Duration().TotalSeconds);
-        Statistics.MaxWait = diff.Max();
+        var timestamps         = Station.WaitingList.Take(newPassengers);
+        var diff               = timestamps.Select(i => (i.TimeOfDay - dt.TimeOfDay).Duration().TotalSeconds);
+        Statistics.MaxWait     = diff.Max();
         Statistics.WaitingTime = diff.Sum();
       }
 
       Station.WaitingList.RemoveRange(0, newPassengers);
-      Passengers      = Passengers + newPassengers;
       return newPassengers;
     }
 
     public int PassengersOut(DateTime dt) {
       if (Station.Number == 666) { return Passengers; }
+
       string stationName = Station.StationDict()[Station.Number];
       int wantOut        = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
       int p              = Passengers;
@@ -65,7 +60,15 @@ namespace afds {
       return wantOut;
     }
 
-    public char Direction() {
+    private int WaitingPeople(int dwellType, Uithoflijn uithoflijn, DateTime dt) {
+      if (dwellType == 1) {
+        return Station.WaitingPeople(uithoflijn);
+      } else {
+        return Station.WaitingPeople2(dt);
+      }
+    }
+
+    private char Direction() {
       if (Station.Number < 9) {
         return 'a';
       } else {
@@ -77,12 +80,6 @@ namespace afds {
       int prev = this.Number + 1;
       if (prev >= trams.Length) { prev = 0; };
       return trams[prev];
-    }
-
-    public Tram NextTram(Tram[] trams) {
-      int next = this.Number - 1;
-      if (next < 0) { next = trams.Length - 1; };
-      return trams[next];
     }
 
     public void LogPassengersOut(DateTime dt, int stationName, int p, int wantOut) {

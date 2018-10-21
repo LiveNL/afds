@@ -21,40 +21,34 @@ namespace afds {
 
     public Station NextStation(Station[] stations) {
       int next = Number + 1;
-      if (next == 18) {
-        next = 0;
-      } else if (Number == 666) {
-        next = 0;
-      }
+      if (next == 18 || Number == 666) { next = 0; }
       return stations[next];
     }
 
     public int WaitingPeople(Uithoflijn uithoflijn) {
-      DateTime then;
       DateTime now = LastArrivalEvent.DateTime;
-      DateTime timeIs715 = new DateTime(1, 1, 1, 7, 15, 0);
-      bool laterThan715 = now.AddMinutes(-15).TimeOfDay > timeIs715.TimeOfDay;
 
+      DateTime then;
       if (LastDepartureEvent != null)  {
         then = LastDepartureEvent.DateTime;
-      } else if (laterThan715){
-        then = now.AddMinutes(-15);
-      } else { return 0; }
+      } else {
+        then = DateTime.Parse("6:00:00 AM");
+      }
 
       List<DateTime> passengers = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
-      // Console.WriteLine("PASSENGERS: {0} at Station: {1}", passengers.Count, Number);
       WaitingList.AddRange(passengers);
-      int p = passengers.Count;
-      Waiting = Waiting + p;
+
+      Waiting = Waiting + passengers.Count;
       return Waiting;
     }
 
     public int WaitingPeople2(DateTime now) {
       DateTime then = LastArrivalEvent.DateTime;
+
       List<DateTime> passengers = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
       WaitingList.AddRange(passengers);
-      int p = passengers.Count;
-      Waiting = Waiting + p;
+
+      Waiting = Waiting + passengers.Count;
       return Waiting;
     }
 
