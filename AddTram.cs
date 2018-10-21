@@ -9,7 +9,7 @@ namespace afds {
     public Tram     Tram     { get; set; }
 
     public int StationCheckEventType = 2;
-    public int AddTramEventType = 2;
+    public int AddTramEventType = 3;
 
     // Config
     public int Schedule = 22;
