@@ -65,7 +65,7 @@ namespace afds {
             res += "The total number of passengers is: " + _Passengers.ToString() + " people.\n";
 
             double avg_delay = _Delay / _DelayChecks;
-            res += "The average delay time is: " + Convert.ToInt32(avg_delay).ToString() + " seconds.\n";
+            res += "The average delay time is: " + avg_delay.ToString() + " seconds.\n";
             res += "The maximum delay time is: " + _MaxDelay.ToString() + " seconds.\n";
             res += "The total number of delayChecks is: " + _DelayChecks.ToString() + "\n";
 

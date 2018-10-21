@@ -8,7 +8,13 @@ namespace afds {
     public Station  Station  { get; set; }
     public Tram     Tram     { get; set; }
 
-    public int ArrivalEventType = 1;
+    public int ArrivalEventType     = 1;
+    public int CrossCheckEventType  = 4;
+    public int OpenCrossEventType   = 5;
+
+    // Config
+    public int OpenCrossAfterS      = 10;
+    public int nextCrossCheckAfterS = 10;
 
     public CrossCheck (Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
@@ -17,33 +23,28 @@ namespace afds {
     }
 
     public bool CrossIsOpen(Uithoflijn uithoflijn) {
-      int[] crossStations = { 7, 8, 9, 10 };
-      if (crossStations.Contains(Station.Number)) {
-        return uithoflijn.Crosses[0].Open;
-      } else {
-        return uithoflijn.Crosses[1].Open;
-      }
+      if (Station.Number == 7  || Station.Number == 8) { return uithoflijn.Crosses[0].Open; }
+      if (Station.Number == 16 || Station.Number == 17){ return uithoflijn.Crosses[1].Open; }
+      return false;
     }
 
     public List<Event> ScheduleCrossOpen(List<Event> events) {
-      events.Add(new Event(DateTime.AddSeconds(0), 5, Tram, Station));
+      DateTime openCrossDT    = DateTime.AddSeconds(OpenCrossAfterS);
+      Event    openCrossEvent = new Event(openCrossDT, OpenCrossEventType, Tram, Station);
+      events.Add(openCrossEvent);
       return events;
     }
 
-    public List<Event> ScheduleArrival(List<Event> events, Station newStation) {
-      events.Add(new Event(DateTime, ArrivalEventType, Tram, newStation));
+    public List<Event> ScheduleArrival(List<Event> events, Station station) {
+      Event arrivalEvent = new Event(DateTime, ArrivalEventType, Tram, station);
+      events.Add(arrivalEvent);
       return events;
     }
 
-    public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {
-      DateTime newCheckTime  = DateTime.AddSeconds(5);
-      Event    newCheckEvent = new Event(newCheckTime, 2, Tram, Station);
+    public List<Event> ScheduleCrossCheck(List<Event> events, Station station) {
+      DateTime nextCrossCheck = DateTime.AddSeconds(nextCrossCheckAfterS);
+      Event    newCheckEvent  = new Event(nextCrossCheck, CrossCheckEventType, Tram, station);
       events.Add(newCheckEvent);
-      return events;
-    }
-
-    public List<Event> ScheduleCrossCheck(List<Event> events) {
-      events.Add(new Event(DateTime, 4, Tram, Station));
       return events;
     }
   }

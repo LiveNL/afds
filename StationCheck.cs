@@ -9,6 +9,10 @@ namespace afds {
     public Tram     Tram     { get; set; }
 
     public int ArrivalEventType = 1;
+    public int StationCheckEventType = 2;
+
+    // Config
+    public int stationCheckAfterS = 10;
 
     public StationCheck(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
@@ -21,19 +25,10 @@ namespace afds {
       return events;
     }
 
-    public bool EmptyNextStation(Uithoflijn uithoflijn) {
-      return Station.NextStation(uithoflijn.Stations).Tram == null;
-    }
-
-    public List<Event> ScheduleStationCheck(List<Event> events, Uithoflijn uithoflijn) {
-      DateTime newCheckTime  = DateTime.AddSeconds(10);
-      Event    newCheckEvent = new Event(newCheckTime, 2, Tram, Station);
+    public List<Event> ScheduleStationCheck(List<Event> events, Station station) {
+      DateTime nextCheckTime  = DateTime.AddSeconds(stationCheckAfterS);
+      Event    newCheckEvent  = new Event(nextCheckTime, StationCheckEventType, Tram, station);
       events.Add(newCheckEvent);
-      return events;
-    }
-
-    public List<Event> ScheduleCrossCheck(List<Event> events) {
-      events.Add(new Event(DateTime, 4, Tram, Station));
       return events;
     }
 

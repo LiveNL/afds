@@ -8,8 +8,8 @@ namespace afds {
     public Station  Station  { get; set; }
     public Tram     Tram     { get; set; }
 
-    public int StationCheckEventType = 2;
     public int DepartureEventType    = 0;
+    public int StationCheckEventType = 2;
 
     public Departure(DateTime dt, Station station, Tram tram) {
       DateTime = dt;
@@ -25,27 +25,20 @@ namespace afds {
       return events;
     }
 
-    public bool CrossIsOpen(Uithoflijn uithoflijn) {
-      if (Station.Number == 8) {
-        return uithoflijn.Crosses[0].Open;
-      } else {
-        return uithoflijn.Crosses[1].Open;
-      }
-    }
-
     public Station StationToCheck(Uithoflijn uithoflijn) {
       if (Station.Number == 8) {
         return uithoflijn.Stations[10];
-      } else if (Station.Number == 17) {
-        return uithoflijn.Stations[1];
-      } else {
-        return Tram.LastStation.NextStation(uithoflijn.Stations);
       }
+
+      if (Station.Number == 17) {
+        return uithoflijn.Stations[1];
+      }
+
+      return Station.NextStation(uithoflijn.Stations);
     }
 
     public int TravelTime() {
       int travelTime = 0;
-
       if (Station.Number == 9) {
         travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_a[7]);
       } else if (Station.Number == 0) {
@@ -55,7 +48,6 @@ namespace afds {
       } else if (Station.Number > 8) {
         travelTime = Probabilities.CalcRunTime(Probabilities.Runtimes_b[Station.Number - 10]);
       }
-      // LogTravelTime(travelTime);
       return travelTime;
     }
 

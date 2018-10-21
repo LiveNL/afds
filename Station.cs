@@ -21,7 +21,7 @@ namespace afds {
 
     public Station NextStation(Station[] stations) {
       int next = Number + 1;
-      if (next == stations.Length) {
+      if (next == 18) {
         next = 0;
       } else if (Number == 666) {
         next = 0;

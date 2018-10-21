@@ -9,6 +9,10 @@ namespace afds {
     public Tram     Tram     { get; set; }
 
     public int StationCheckEventType = 2;
+    public int AddTramEventType = 2;
+
+    // Config
+    public int Schedule = 22;
 
     public AddTram(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
@@ -20,13 +24,12 @@ namespace afds {
       Station firstStation = uithoflijn.Stations[0];
       StationCheck stationCheck = new StationCheck(e, firstStation, Tram);
 
-      if (stationCheck.EmptyNextStation(uithoflijn)) {
+      if (firstStation.Tram == null) {
         Tram.Start = DateTime;
-        Tram.Schedule = 21;
-        Console.WriteLine("First DT: {0}, Schedule: {1}", Tram.Start, Tram.Schedule);
+        Tram.Schedule = Schedule;
         return stationCheck.ScheduleArrival(e, events);
       } else {
-        return stationCheck.ScheduleStationCheck(events, uithoflijn);
+        return stationCheck.ScheduleStationCheck(events, firstStation);
       }
     }
 
@@ -34,7 +37,7 @@ namespace afds {
       Tram prevTram = Tram.PrevTram(uithoflijn.Trams);
 
       if (prevTram.Station?.Number == 666) {
-        events.Add(new Event(DateTime.AddSeconds(s), 3, prevTram, Station));
+        events.Add(new Event(DateTime.AddSeconds(s), AddTramEventType, prevTram, Station));
       }
 
       return events;
