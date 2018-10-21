@@ -50,7 +50,7 @@ namespace afds {
             double min = 0.8 * mean;
             double gamma = GenerateGammaValue(2, mean / 2);
             if (gamma < min) return (int)min;
-            else return (int)gamma;
+            else return (int)gamma + CalcDoorJam(1);
         }
 
         public static int CalcSecondDwellingTime(int passengers_in)
@@ -135,6 +135,13 @@ namespace afds {
             if (norm > occupation)
                 return occupation;
             return norm > 0 ? norm : 0;
+        }
+
+        public static int CalcDoorJam(int x)
+        {
+            if (random.NextDouble() * 100 < x)
+                return 60;
+            else return 0; 
         }
 
         //The probability functions that are used in determining the random variables.
