@@ -35,7 +35,7 @@ namespace afds {
         then = DateTime.Parse("6:00:00 AM");
       }
 
-      List<DateTime> passengers = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      List<DateTime> passengers = Passengers(then, now);
       WaitingList.AddRange(passengers);
 
       Waiting = Waiting + passengers.Count;
@@ -43,13 +43,22 @@ namespace afds {
     }
 
     public int WaitingPeople2(DateTime now) {
-      DateTime then = LastArrivalEvent.DateTime;
+      DateTime then             = LastArrivalEvent.DateTime;
+      List<DateTime> passengers = Passengers(then, now);
 
-      List<DateTime> passengers = Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
       WaitingList.AddRange(passengers);
-
       Waiting = Waiting + passengers.Count;
       return Waiting;
+    }
+
+    public List<DateTime> Passengers(DateTime then, DateTime now) {
+      if (Number == 8) {
+        return Probabilities.GeneratePassengerArrivals(then, now, Rates(9));
+      } else if (Number == 17) {
+        return Probabilities.GeneratePassengerArrivals(then, now, Rates(0));
+      } else {
+        return Probabilities.GeneratePassengerArrivals(then, now, Rates(Number));
+      }
     }
 
     public double[] Rates(int nr) {

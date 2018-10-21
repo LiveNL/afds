@@ -69,7 +69,7 @@ namespace afds {
     }
 
     private char Direction() {
-      if (Station.Number < 9) {
+      if (Station.Number <= 9 && Station.Number > 0) {
         return 'a';
       } else {
         return 'b';
