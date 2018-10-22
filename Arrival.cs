@@ -48,14 +48,15 @@ namespace afds {
     }
 
     public int DwellTime(Uithoflijn uithoflijn) {
-      int passIn    = Tram.PassengersIn(DateTime, 1, uithoflijn);
       int passOut   = Tram.PassengersOut(DateTime);
+      int passIn    = Tram.PassengersIn(DateTime, 1, uithoflijn);
       int dwellTime = Probabilities.CalcDwellingTime(passIn, passOut);
       return dwellTime;
     }
 
     public int SndDwellTime(DateTime dt, Uithoflijn uithoflijn) {
       int passIn    = Tram.PassengersIn(dt, 2, uithoflijn);
+      if (passIn == 0) return 0;
       int dwellTime = Probabilities.CalcSecondDwellingTime(passIn);
       return dwellTime;
     }
