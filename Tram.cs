@@ -64,7 +64,6 @@ namespace afds {
 
       string stationName = Station.StationDict()[Station.Number];
       int wantOut        = Probabilities.CalcExit(dt, stationName, Direction(), Passengers);
-      int p              = Passengers;
       Passengers         = Passengers - wantOut;
       return wantOut;
     }

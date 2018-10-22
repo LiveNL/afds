@@ -79,7 +79,7 @@ namespace afds {
         case 2: // station check
           Station stationToCheck = e.Station;
           LogEvent(e, tram, stationToCheck);
-          StationCheck stationCheck = new StationCheck(e, stationToCheck, tram);
+          StationCheck stationCheck = new StationCheck(e.DateTime, stationToCheck, tram);
 
           if (e.DateTime > DateTime.Parse("7:00:00 PM")) {
             tram.Schedule = EarlySchedule;
@@ -92,6 +92,8 @@ namespace afds {
                 return stationCheck.ScheduleStationCheck(events, stationToCheck);
               }
             }
+          } else if (e.DateTime > DateTime.Parse("7:00:00 AM")) {
+            tram.Schedule = MaxFSchedule;
           }
 
           int last = tram.LastStation.Number;
@@ -116,25 +118,32 @@ namespace afds {
             return stationCrossCheck.ScheduleCrossCheck(events, stationToCheck.NextStation(uithoflijn.Stations));
 
           } else if (stationToCheck.Tram == null && A40SecondDistance) {
-            return stationCheck.ScheduleArrival(e, events);
+            return stationCheck.ScheduleArrival(events);
           } else {
             return stationCheck.ScheduleStationCheck(events, e.Station);
           }
 
         case 3: // add tram
           LogEvent(e, tram, tram.Station);
-          AddTram addTram = new AddTram(e, tram.Station, tram);
 
-          if (TRAMS == 1) { // DEBUG
-            addTram.ScheduleNewTram(e, events, uithoflijn, MaxFSchedule); return events;
-          }
+          if (e.DateTime == DateTime.Parse("6:00:00 AM")) {
+            AddTram addTram = new AddTram(e.DateTime, uithoflijn.Stations[0], uithoflijn.Trams[0]);
+            addTram.ScheduleNewTram(events, uithoflijn, EarlySchedule);
 
-          if (e.DateTime < DateTime.Parse("7:00:00 AM")) {
-            addTram.ScheduleNewTram(e, events, uithoflijn, EarlySchedule);
-            addTram.ScheduleAddTramEvent(events, uithoflijn, EarlyTramsInterval);
+            AddTram addTram1 = new AddTram(e.DateTime, uithoflijn.Stations[9], uithoflijn.Trams[1]);
+            addTram1.ScheduleNewTram(events, uithoflijn, EarlySchedule);
+
+            AddTram addTram2 = new AddTram(e.DateTime.AddMinutes(15), uithoflijn.Stations[0], uithoflijn.Trams[2]);
+            addTram2.ScheduleNewTram(events, uithoflijn, EarlySchedule);
+
+            AddTram addTram3 = new AddTram(e.DateTime.AddMinutes(15), uithoflijn.Stations[9], uithoflijn.Trams[3]);
+            addTram3.ScheduleNewTram(events, uithoflijn, EarlySchedule);
+
+            addTram3.ScheduleAddTramEvent(events, uithoflijn, 2700);
 
           } else if (DateTime.Parse("7:00:00 AM") <= e.DateTime && e.DateTime <= DateTime.Parse("7:00:00 PM")) {
-            addTram.ScheduleNewTram(e, events, uithoflijn, MaxFSchedule);
+            AddTram addTram = new AddTram(e.DateTime, uithoflijn.Stations[0], tram);
+            addTram.ScheduleNewTram(events, uithoflijn, MaxFSchedule);
             addTram.ScheduleAddTramEvent(events, uithoflijn, MaxFTramsInterval);
           }
           return events;
@@ -144,29 +153,37 @@ namespace afds {
           LogEvent(e, tram, tram.LastStation);
           CrossCheck crossCheck = new CrossCheck(e, tram.LastStation, tram);
 
-          if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 7) {
+          if (crossCheck.CrossIsOpen(uithoflijn) && uithoflijn.Stations[9].Tram == null && tram.LastStation.Number == 7) {
             crossCheck.ScheduleArrival(events, uithoflijn.Stations[9]);
             uithoflijn.Crosses[0].Open = false; // for 1 minute
             return crossCheck.ScheduleCrossOpen(events);
 
-          } else if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 16) {
+          } else if (crossCheck.CrossIsOpen(uithoflijn) && uithoflijn.Stations[0].Tram == null && tram.LastStation.Number == 16) {
             crossCheck.ScheduleArrival(events, uithoflijn.Stations[0]);
             uithoflijn.Crosses[1].Open = false; // for 1 minute
             return crossCheck.ScheduleCrossOpen(events);
 
-          } else if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 8) {
+          } else if (crossCheck.CrossIsOpen(uithoflijn) && uithoflijn.Stations[10].Tram == null && tram.LastStation.Number == 8) {
             crossCheck.ScheduleArrival(events, uithoflijn.Stations[10]);
             uithoflijn.Crosses[0].Open = false; // for 1 minute
             return crossCheck.ScheduleCrossOpen(events);
 
-          } else if (crossCheck.CrossIsOpen(uithoflijn) && tram.LastStation.Number == 17) {
+          } else if (crossCheck.CrossIsOpen(uithoflijn) && uithoflijn.Stations[1].Tram == null && tram.LastStation.Number == 17) {
             crossCheck.ScheduleArrival(events, uithoflijn.Stations[1]);
             uithoflijn.Crosses[1].Open = false; // for 1 minute
             return crossCheck.ScheduleCrossOpen(events);
 
+          } else if (crossCheck.CrossIsOpen(uithoflijn) == false && tram.LastStation.Number == 8) {
+            StationCheck crossStationCheck = new StationCheck(e.DateTime, uithoflijn.Stations[10], tram);
+            return crossStationCheck.ScheduleStationCheck(events, uithoflijn.Stations[10]);
+
+          } else if (crossCheck.CrossIsOpen(uithoflijn) == false && tram.LastStation.Number == 17) {
+            StationCheck crossStationCheck = new StationCheck(e.DateTime, uithoflijn.Stations[1], tram);
+            return crossStationCheck.ScheduleStationCheck(events, uithoflijn.Stations[1]);
+
           } else {
             // Cross is Closed
-            StationCheck crossStationCheck = new StationCheck(e, tram.LastStation.NextStation(uithoflijn.Stations), tram);
+            StationCheck crossStationCheck = new StationCheck(e.DateTime, tram.LastStation.NextStation(uithoflijn.Stations), tram);
             return crossStationCheck.ScheduleStationCheck(events, tram.LastStation.NextStation(uithoflijn.Stations));
           }
 

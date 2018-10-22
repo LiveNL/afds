@@ -14,7 +14,7 @@ namespace afds {
 
     // Config
     public int OpenCrossAfterS      = 60;
-    public int nextCrossCheckAfterS = 10;
+    public int nextCrossCheckAfterS = 2;
 
     public CrossCheck (Event e, Station station, Tram tram) {
       DateTime = e.DateTime;

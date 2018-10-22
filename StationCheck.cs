@@ -14,14 +14,14 @@ namespace afds {
     // Config
     public int stationCheckAfterS = 10;
 
-    public StationCheck(Event e, Station station, Tram tram) {
-      DateTime = e.DateTime;
+    public StationCheck(DateTime dt, Station station, Tram tram) {
+      DateTime = dt;
       Station = station;
       Tram = tram;
     }
 
-    public List<Event> ScheduleArrival(Event e, List<Event> events) {
-      events.Add(new Event(e.DateTime, ArrivalEventType, Tram, Station));
+    public List<Event> ScheduleArrival(List<Event> events) {
+      events.Add(new Event(DateTime, ArrivalEventType, Tram, Station));
       return events;
     }
 
