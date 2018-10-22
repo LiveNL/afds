@@ -33,8 +33,6 @@ namespace afds {
       Cross[] crosses = new Cross[2];
       for (int i = 0; i < 2; i++) { crosses[i] = new Cross(i); }
       Crosses = crosses;
-
-      Console.WriteLine("New UithofLijn created!");
     }
 
     public Uithoflijn (Tram[] trams, Station[] stations) {
@@ -49,7 +47,7 @@ namespace afds {
       switch (eventType) {
         case 0: // departure
           Station departureStation = e.Station;
-          LogEvent(e, tram, departureStation);
+          //LogEvent(e, tram, departureStation);
           Departure departure = new Departure(e.DateTime, departureStation, tram);
 
           tram.LastStation                     = departureStation;
@@ -63,7 +61,7 @@ namespace afds {
 
         case 1: // arrival
           Station arrivalStation = e.Station;
-          LogEvent(e, tram, arrivalStation);
+          //LogEvent(e, tram, arrivalStation);
           Arrival arrival = new Arrival(e, arrivalStation, tram);
 
           tram.Station                     = arrivalStation;
@@ -78,7 +76,7 @@ namespace afds {
 
         case 2: // station check
           Station stationToCheck = e.Station;
-          LogEvent(e, tram, stationToCheck);
+          //LogEvent(e, tram, stationToCheck);
           StationCheck stationCheck = new StationCheck(e.DateTime, stationToCheck, tram);
 
           if (e.DateTime > DateTime.Parse("7:00:00 PM")) {
@@ -128,7 +126,7 @@ namespace afds {
           }
 
         case 3: // add tram
-          LogEvent(e, tram, tram.Station);
+          //LogEvent(e, tram, tram.Station);
 
           if (e.DateTime == DateTime.Parse("6:00:00 AM")) {
             AddTram addTram = new AddTram(e.DateTime, uithoflijn.Stations[0], uithoflijn.Trams[0]);
@@ -154,7 +152,7 @@ namespace afds {
 
 
         case 4: // cross check
-          LogEvent(e, tram, tram.LastStation);
+          //LogEvent(e, tram, tram.LastStation);
           CrossCheck crossCheck = new CrossCheck(e, tram.LastStation, tram);
 
           if (crossCheck.CrossIsOpen(uithoflijn) && uithoflijn.Stations[9].Tram == null && tram.LastStation.Number == 7) {
@@ -193,7 +191,7 @@ namespace afds {
 
 
           case 5: // reopen cross
-            LogEvent(e, tram, e.Station);
+            //LogEvent(e, tram, e.Station);
 
             int[] cross0Stations = { 7, 8 };
             int[] cross1Stations = { 16, 17 };

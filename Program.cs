@@ -35,7 +35,6 @@ namespace afds {
       }
 
       Console.Write(Statistics.Results());
-      (new Report()).Print(uithoflijn, state);
     }
 
     static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {

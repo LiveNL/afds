@@ -36,8 +36,8 @@ namespace afds {
 
       if (QStations.Contains(Station.Number)) {
         if (dtAfterExtraTime > Tram.Start) {
-          Statistics.MaxDelay = extraTime;
-          Statistics.Delay    = extraTime;
+          Statistics.MaxDelay(extraTime, DateTime);
+          Statistics.Delay(extraTime, DateTime);
         }
 
         UpdateTramSchedule();
@@ -105,7 +105,7 @@ namespace afds {
     }
 
     public void UpdateStatistics() {
-      Statistics.DelayChecks = 1;
+      Statistics.DelayChecks(1, DateTime);
       Tram.Rounds            = Tram.Rounds + 1;
     }
 
