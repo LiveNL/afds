@@ -14,7 +14,7 @@ namespace afds {
     public int MaxFTramsInterval  = 300;
     public int EarlySchedule      = 30;
     public int MaxFSchedule       = 22;
-    public DateTime LastRemoval   = DateTime.Parse("6:50:00 PM");
+    public DateTime LastRemoval   = DateTime.Parse("6:45:00 PM");
 
     public Tram[] Trams { get; set; }
     public Station[] Stations { get; set; }
@@ -83,7 +83,7 @@ namespace afds {
 
           if (e.DateTime > DateTime.Parse("7:00:00 PM")) {
             tram.Schedule = EarlySchedule;
-            bool ok = (LastRemoval == null || (e.DateTime - LastRemoval).TotalSeconds > 600);
+            bool ok = (LastRemoval == null || (e.DateTime - LastRemoval).TotalSeconds > 900);
             if ((stationToCheck.Number == 17 || stationToCheck.Number == 0) && (tramsInDepot(uithoflijn) < 9) && ok) {
               if (stationToCheck.Tram == null) {
                 LastRemoval = e.DateTime;
