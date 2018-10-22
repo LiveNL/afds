@@ -46,7 +46,7 @@ namespace afds {
         var timestamps         = Station.WaitingList.Take(newPassengers);
         var diff               = timestamps.Select(i => (i.TimeOfDay - dt.TimeOfDay).Duration().TotalSeconds);
         Statistics.MaxWait     = diff.Max();
-        if (diff.Max() > 1800.0) {
+        if (diff.Max() > 900.0) {
           Console.WriteLine("Someone waited {0} seconds, got in the tram at station {1} at {2}", diff.Max().ToString(), Station.StationDict()[Station.Number], dt.ToLongTimeString());
           foreach (Tram t in uithoflijn.Trams) {
             Console.WriteLine("Tram {0} was last seen at {1}", t.Number, t.LastStation.Number);
