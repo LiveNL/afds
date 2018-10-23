@@ -35,6 +35,14 @@ namespace afds {
             Exit_rates_a = ReadCsv(Filepath2);
             const string Filepath3 = "./new_exit_rates_b.csv";
             Exit_rates_b = ReadCsv(Filepath3);
+
+            // Verification of artificial input
+            const string FilePathV1 = "./input-data-passengers-01.csv";
+            Dictionary<string, double[]> VRates_a = ReadValidationCsv(FilePathV1);
+
+            foreach (KeyValuePair<string, double[]> pair in VRates_a) {
+              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
+            }
         }
 
         //The functions that are directly called in the simulation.
@@ -140,7 +148,7 @@ namespace afds {
         {
             if (random.NextDouble() * 100 < x)
                 return 60;
-            else return 0; 
+            else return 0;
         }
 
         //The probability functions that are used in determining the random variables.
@@ -218,6 +226,56 @@ namespace afds {
                 }
             }
             return res;
+        }
+
+        static Dictionary<string, double[]> ReadValidationCsv(string filepath) {
+          Dictionary<string, double[]> res = new Dictionary<string, double[]>();
+
+          using (var reader = new StreamReader(filepath)) {
+            List<string> list = new List<string>();
+            var first_line    = reader.ReadLine(); // omit this one
+
+            while (!reader.EndOfStream) {
+                var line = reader.ReadLine();
+                var values = line.Split(';');
+
+                string name = values[0];
+                int dir     = Int32.Parse(values[1]);
+                int from    = Int32.Parse(values[2]);
+                double to   = double.Parse(values[3]);
+                double passIn = double.Parse(values[4]);
+                double passOut = double.Parse(values[4]);
+
+                if (!res.ContainsKey(name)) {
+                  res.Add(name, new double[62]);
+                }
+
+                WriteX(from, to, res, name, passIn);
+            }
+          }
+          return res;
+        }
+
+        static Dictionary<string, double[]> WriteX(int begin, double end, Dictionary<string, double[]> res, string name, double p) {
+          string bS = $"{begin}:00:00";
+          string eS;
+
+          if (end == 21.5) {
+            eS = "21:30:00";
+          } else {
+            eS = $"{end}:00:00";
+          }
+
+          DateTime beginDt = DateTime.Parse(bS.ToString());
+          DateTime endDt   = DateTime.Parse(eS.ToString());
+
+          for (DateTime dt = beginDt; dt < endDt; dt = dt.AddMinutes(15)) {
+            int n = TimeToIndex(dt);
+            Console.WriteLine("ADD: {0}, to {1}, bs {2}, {3}", name, n, dt, begin);
+            res[name][n] = (double)p;
+          }
+
+          return res;
         }
     }
 }
