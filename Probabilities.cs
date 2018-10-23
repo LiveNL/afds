@@ -27,22 +27,42 @@ namespace afds {
             random = new MersenneTwister(12);
             Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135 };
             Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113 };
-            const string Filepath = "./rates_a.csv";
-            Rates_a = ReadCsv(Filepath);
-            const string Filepath1 = "./rates_b.csv";
-            Rates_b = ReadCsv(Filepath1);
-            const string Filepath2 = "./new_exit_rates_a.csv";
-            Exit_rates_a = ReadCsv(Filepath2);
-            const string Filepath3 = "./new_exit_rates_b.csv";
-            Exit_rates_b = ReadCsv(Filepath3);
+            // const string Filepath = "./rates_a.csv";
+            // Rates_a = ReadCsv(Filepath);
+            // const string Filepath1 = "./rates_b.csv";
+            // Rates_b = ReadCsv(Filepath1);
+            // const string Filepath2 = "./new_exit_rates_a.csv";
+            // Exit_rates_a = ReadCsv(Filepath2);
+            // const string Filepath3 = "./new_exit_rates_b.csv";
+            // Exit_rates_b = ReadCsv(Filepath3);
 
             // Verification of artificial input
             const string FilePathV1 = "./input-data-passengers-01.csv";
-            Dictionary<string, double[]> VRates_a = ReadValidationCsv(FilePathV1);
+            Rates_a = ReadValidationCsv(FilePathV1, 0, 0);
+            Rates_b = ReadValidationCsv(FilePathV1, 1, 0);
 
-            foreach (KeyValuePair<string, double[]> pair in VRates_a) {
+            Exit_rates_a = ReadValidationCsv(FilePathV1, 0, 1);
+            Exit_rates_b = ReadValidationCsv(FilePathV1, 1, 1);
+
+            Console.WriteLine("RATES A");
+            foreach (KeyValuePair<string, double[]> pair in Rates_a) {
               Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
             }
+//
+//            Console.WriteLine("RATES B");
+//            foreach (KeyValuePair<string, double[]> pair in Rates_b) {
+//              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
+//            }
+//
+//            Console.WriteLine("Exit RATES A");
+//            foreach (KeyValuePair<string, double[]> pair in Exit_rates_a) {
+//              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
+//            }
+//
+//            Console.WriteLine("Exit RATES B");
+//            foreach (KeyValuePair<string, double[]> pair in Exit_rates_b) {
+//              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
+//            }
         }
 
         //The functions that are directly called in the simulation.
@@ -228,7 +248,7 @@ namespace afds {
             return res;
         }
 
-        static Dictionary<string, double[]> ReadValidationCsv(string filepath) {
+        static Dictionary<string, double[]> ReadValidationCsv(string filepath, int InOut, int Dir) {
           Dictionary<string, double[]> res = new Dictionary<string, double[]>();
 
           using (var reader = new StreamReader(filepath)) {
@@ -239,19 +259,21 @@ namespace afds {
                 var line = reader.ReadLine();
                 var values = line.Split(';');
 
-                string name = values[0];
-                int dir     = Int32.Parse(values[1]);
-                int from    = Int32.Parse(values[2]);
-                double to   = double.Parse(values[3]);
-                double passIn = double.Parse(values[4]);
-                double passOut = double.Parse(values[4]);
+                string name    = StationName(values[0]);
+                int dir        = Int32.Parse(values[1]);
+                int from       = Int32.Parse(values[2]);
+                double to      = double.Parse(values[3]);
+                double passIn  = double.Parse(values[4]);
+                double passOut = double.Parse(values[5]);
 
-                if (dir == 0) {
-                  if (!res.ContainsKey(name)) {
-                    res.Add(name, new double[62]);
+                if (Dir == dir) {
+                  if (!res.ContainsKey(name)) { res.Add(name, new double[62]); }
+
+                  if (InOut == 0) {
+                    WriteX(from, to, res, name, passIn);
+                  } else {
+                    WriteX(from, to, res, name, passOut);
                   }
-
-                  WriteX(from, to, res, name, passIn);
                 }
             }
           }
@@ -280,6 +302,20 @@ namespace afds {
           }
 
           return res;
+        }
+
+        static string StationName(string name) {
+          var map = new Dictionary<string, string>();
+          map.Add("P+R Uithof",                    "P+R De Uithof");
+          map.Add("WKZ",                           "WKZ");
+          map.Add("UMC",                           "UMC");
+          map.Add("Heidelberglaan",                "Heidelberglaan");
+          map.Add("Padualaan",                     "Padualaan");
+          map.Add("Kromme Rijn",                   "Kromme Rijn");
+          map.Add("Galgenwaard",                   "Galgenwaard");
+          map.Add("Vaartscherijn",                 "Vaartsche Rijn");
+          map.Add("Centraal Station Centrumzijde", "Centraal Station");
+          return map[name];
         }
     }
 }

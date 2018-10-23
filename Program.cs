@@ -8,9 +8,9 @@ namespace afds {
   class Program {
     static void Main(string[] args) {
       Probabilities.InitProbabilities();
-      
+
       int n = 100;
-      for (int i = 0; i < n; i++) { 
+      for (int i = 0; i < n; i++) {
         Statistics.InitStatistics();
 
         Uithoflijn uithoflijn = new Uithoflijn();
@@ -38,6 +38,7 @@ namespace afds {
           };
         }
 
+        Console.WriteLine(i);
         Statistics.UpdateAll(i);
       }
 
