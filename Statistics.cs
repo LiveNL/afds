@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace afds {
     public class Statistics {
@@ -14,7 +15,7 @@ namespace afds {
                 else if (dt >= DateTime.Parse("4:00:00 PM") && dt < DateTime.Parse("6:00:00 PM")) _WaitingTime[3] += wt;
             }
         }
-        
+
         private static int[] _Passengers; //0: All Day, 1: Maximum Frequency, 2: Morning Rush, 3: Evening Rush
         public static void Passengers(int p, DateTime dt) {
             _Passengers[0] += p;
@@ -101,7 +102,7 @@ namespace afds {
 
         public static string Results() {
             string res = "";
-            
+
             res += "WAITING TIMES FOR PASSENGERS:\n";
             res += "\tAll Day (07:00 - 21:30)\n";
             res += string.Format("\t\tAverage Waiting Time: {0} seconds\n", ((int)(_WaitingTime[0] / _Passengers[0])).ToString());
@@ -140,6 +141,8 @@ namespace afds {
 
             res += "OTHER INFORMATION:\n";
             res += string.Format("\tNumber of passengers handled: {0}", _Passengers[0].ToString());
+            res += string.Format("\tTotal amount of delay checks: {0}", _DelayChecks.Sum().ToString());
+            res += "\n";
 
             return(res);
         }
