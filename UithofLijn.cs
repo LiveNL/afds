@@ -13,7 +13,8 @@ namespace afds {
     public int EarlyTramsInterval = 900;
     public int MaxFTramsInterval  = 200;
     public int EarlySchedule      = 30;
-    public int MaxFSchedule       = 22;
+    public static int Q           = 5;
+    public int MaxFSchedule       = 17 + Q;
     public DateTime LastRemoval   = DateTime.Parse("6:45:00 PM");
 
     public Tram[] Trams { get; set; }

@@ -35,9 +35,18 @@ namespace afds {
       DateTime dtAfterExtraTime    = dtAfterSndDwellTime.AddSeconds(extraTime);
 
       if (QStations.Contains(Station.Number)) {
-        if (dtAfterExtraTime > Tram.Start) {
-          Statistics.MaxDelay(extraTime, DateTime);
-          Statistics.Delay(extraTime, DateTime);
+        double delay = (dtAfterExtraTime - Tram.Start).TotalSeconds;
+        if (delay > 0) {
+          Statistics.MaxDelay(delay, DateTime);
+          Statistics.Delay(delay, DateTime);
+          if (Station.Number == 17 || Station.Number == 0) {
+            Statistics.MaxDelayPR(delay, DateTime);
+            Statistics.DelayPR(delay, DateTime);
+          }
+          else if (Station.Number == 8 || Station.Number == 9) {
+            Statistics.MaxDelayCS(delay, DateTime);
+            Statistics.DelayCS(delay, DateTime);
+          }
         }
 
         UpdateTramSchedule();
@@ -106,6 +115,8 @@ namespace afds {
 
     public void UpdateStatistics() {
       Statistics.DelayChecks(1, DateTime);
+      if (Station.Number == 17 || Station.Number == 0) Statistics.DelayChecksPR(1, DateTime);
+      else if (Station.Number == 8 || Station.Number == 9) Statistics.DelayChecksCS(1, DateTime);
       Tram.Rounds            = Tram.Rounds + 1;
     }
 

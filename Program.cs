@@ -8,33 +8,40 @@ namespace afds {
   class Program {
     static void Main(string[] args) {
       Probabilities.InitProbabilities();
-      Statistics.InitStatistics();
-      Uithoflijn uithoflijn = new Uithoflijn();
-      State state           = new State();
-      List<Event> events    = new List<Event>();
+      
+      int n = 100;
+      for (int i = 0; i < n; i++) { 
+        Statistics.InitStatistics();
 
-      Tram    firstTram  = uithoflijn.Trams[0];
-      Station depot      = firstTram.Station;
-      DateTime start     = DateTime.Parse("6:00:00 AM");
-      firstTram.Start    = start;
-      firstTram.Rounds   = 0;
-      events.Add(new Event(start, 3, firstTram, depot));
+        Uithoflijn uithoflijn = new Uithoflijn();
+        State state           = new State();
+        List<Event> events    = new List<Event>();
 
-      bool endCondition = false;
-      while (endCondition == false) {
-        events = events.OrderBy(e => e.DateTime).ToList();
-        Event nextEvent = timingRoutine(uithoflijn, state, events);
+        Tram    firstTram  = uithoflijn.Trams[0];
+        Station depot      = firstTram.Station;
+        DateTime start     = DateTime.Parse("6:00:00 AM");
+        firstTram.Start    = start;
+        firstTram.Rounds   = 0;
+        events.Add(new Event(start, 3, firstTram, depot));
 
-        events = eventRoutine(uithoflijn, state, nextEvent, events);
+        bool endCondition = false;
+        while (endCondition == false) {
+          events = events.OrderBy(e => e.DateTime).ToList();
+          Event nextEvent = timingRoutine(uithoflijn, state, events);
 
-        // Check if loop/simulation should be ended
-        if (!events.Any() || state.SimulationClock > DateTime.Parse("9:30:00 PM")) {
-        // if (!events.Any() || state.SimulationClock > DateTime.Parse("7:45:00 AM")) {
-          endCondition = true;
-        };
+          events = eventRoutine(uithoflijn, state, nextEvent, events);
+
+          // Check if loop/simulation should be ended
+          if (!events.Any() || state.SimulationClock > DateTime.Parse("9:30:00 PM")) {
+          // if (!events.Any() || state.SimulationClock > DateTime.Parse("7:45:00 AM")) {
+            endCondition = true;
+          };
+        }
+
+        Statistics.UpdateAll(i);
       }
 
-      Console.Write(Statistics.Results());
+      Console.Write(Statistics.ResultsAll());
     }
 
     static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
