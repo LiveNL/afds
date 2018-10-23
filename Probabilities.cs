@@ -37,32 +37,12 @@ namespace afds {
             // Exit_rates_b = ReadCsv(Filepath3);
 
             // Verification of artificial input
-            const string FilePathV1 = "./input-data-passengers-01.csv";
+            const string FilePathV1 = "./input-data-passengers-025.csv";
             Rates_a = ReadValidationCsv(FilePathV1, 0, 0);
             Rates_b = ReadValidationCsv(FilePathV1, 1, 0);
 
             Exit_rates_a = ReadValidationCsv(FilePathV1, 0, 1);
             Exit_rates_b = ReadValidationCsv(FilePathV1, 1, 1);
-
-            Console.WriteLine("RATES A");
-            foreach (KeyValuePair<string, double[]> pair in Rates_a) {
-              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
-            }
-//
-//            Console.WriteLine("RATES B");
-//            foreach (KeyValuePair<string, double[]> pair in Rates_b) {
-//              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
-//            }
-//
-//            Console.WriteLine("Exit RATES A");
-//            foreach (KeyValuePair<string, double[]> pair in Exit_rates_a) {
-//              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
-//            }
-//
-//            Console.WriteLine("Exit RATES B");
-//            foreach (KeyValuePair<string, double[]> pair in Exit_rates_b) {
-//              Console.WriteLine("{0}, {1}", pair.Key, String.Join(", ", pair.Value));
-//            }
         }
 
         //The functions that are directly called in the simulation.
@@ -293,11 +273,11 @@ namespace afds {
           DateTime beginDt = DateTime.Parse(bS.ToString());
           DateTime endDt   = DateTime.Parse(eS.ToString());
 
-          int diff = (int)(endDt - beginDt).TotalMinutes;
+          double diff = (double)(endDt - beginDt).TotalSeconds;
 
           for (DateTime dt = beginDt; dt < endDt; dt = dt.AddMinutes(15)) {
             int n = TimeToIndex(dt);
-            double v = (p / diff) * 15;
+            double v = (p / diff);
             res[name][n] = (double)v;
           }
 
