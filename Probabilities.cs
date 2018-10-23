@@ -246,11 +246,13 @@ namespace afds {
                 double passIn = double.Parse(values[4]);
                 double passOut = double.Parse(values[4]);
 
-                if (!res.ContainsKey(name)) {
-                  res.Add(name, new double[62]);
-                }
+                if (dir == 0) {
+                  if (!res.ContainsKey(name)) {
+                    res.Add(name, new double[62]);
+                  }
 
-                WriteX(from, to, res, name, passIn);
+                  WriteX(from, to, res, name, passIn);
+                }
             }
           }
           return res;
@@ -269,10 +271,12 @@ namespace afds {
           DateTime beginDt = DateTime.Parse(bS.ToString());
           DateTime endDt   = DateTime.Parse(eS.ToString());
 
+          int diff = (int)(endDt - beginDt).TotalMinutes;
+
           for (DateTime dt = beginDt; dt < endDt; dt = dt.AddMinutes(15)) {
             int n = TimeToIndex(dt);
-            Console.WriteLine("ADD: {0}, to {1}, bs {2}, {3}", name, n, dt, begin);
-            res[name][n] = (double)p;
+            double v = (p / diff) * 15;
+            res[name][n] = (double)v;
           }
 
           return res;
