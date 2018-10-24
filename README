@@ -19,4 +19,10 @@ exit_rates_b.csv
 
 Next to that there are the artificial input files, and their outputs.
 
+The simulation will run 100 times, and the output will be all average results which can be best represented in a csv file. This can be done with: `dotnet run > output.csv`.
+
+The number of runs can be changed to 1 in the code, in `Program.cs`, in which case a summary of the results is given in a more readable format.
+
+If the number of runs is changed to anything other than 1, it needs to be updated in `Statistics.cs` as well.
+
 Thomas & Jordi
