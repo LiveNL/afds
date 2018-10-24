@@ -27,14 +27,23 @@ namespace afds {
             random = new MersenneTwister(12);
             Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135 };
             Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113 };
-            const string Filepath = "./rates_a.csv";
+            const string Filepath = "./data/rates_a.csv";
             Rates_a = ReadCsv(Filepath);
-            const string Filepath1 = "./rates_b.csv";
+            const string Filepath1 = "./data/rates_b.csv";
             Rates_b = ReadCsv(Filepath1);
-            const string Filepath2 = "./new_exit_rates_a.csv";
+            const string Filepath2 = "./data/new_exit_rates_a.csv";
             Exit_rates_a = ReadCsv(Filepath2);
-            const string Filepath3 = "./new_exit_rates_b.csv";
+            const string Filepath3 = "./data/new_exit_rates_b.csv";
             Exit_rates_b = ReadCsv(Filepath3);
+
+            // Verification of artificial input
+            //
+            // const string FilePathV1 = "./input-data-passengers-01.csv";
+            // Rates_a = ReadValidationCsv(FilePathV1, 0, 0);
+            // Rates_b = ReadValidationCsv(FilePathV1, 1, 0);
+
+            // Exit_rates_a = ReadValidationCsv(FilePathV1, 0, 1);
+            // Exit_rates_b = ReadValidationCsv(FilePathV1, 1, 1);
         }
 
         //The functions that are directly called in the simulation.
@@ -140,7 +149,7 @@ namespace afds {
         {
             if (random.NextDouble() * 100 < x)
                 return 60;
-            else return 0; 
+            else return 0;
         }
 
         //The probability functions that are used in determining the random variables.
@@ -218,6 +227,76 @@ namespace afds {
                 }
             }
             return res;
+        }
+
+        static Dictionary<string, double[]> ReadValidationCsv(string filepath, int InOut, int Dir) {
+          Dictionary<string, double[]> res = new Dictionary<string, double[]>();
+
+          using (var reader = new StreamReader(filepath)) {
+            List<string> list = new List<string>();
+            var first_line    = reader.ReadLine(); // omit this line
+
+            while (!reader.EndOfStream) {
+                var line = reader.ReadLine();
+                var values = line.Split(';');
+
+                string name    = StationName(values[0]);
+                int dir        = Int32.Parse(values[1]);
+                int from       = Int32.Parse(values[2]);
+                double to      = double.Parse(values[3]);
+                double passIn  = double.Parse(values[4]);
+                double passOut = double.Parse(values[5]);
+
+                if (Dir == dir) {
+                  if (!res.ContainsKey(name)) { res.Add(name, new double[62]); }
+
+                  if (InOut == 0) {
+                    WriteX(from, to, res, name, passIn);
+                  } else {
+                    WriteX(from, to, res, name, passOut);
+                  }
+                }
+            }
+          }
+          return res;
+        }
+
+        static Dictionary<string, double[]> WriteX(int begin, double end, Dictionary<string, double[]> res, string name, double p) {
+          string bS = $"{begin}:00:00";
+          string eS;
+
+          if (end == 21.5) {
+            eS = "21:30:00";
+          } else {
+            eS = $"{end}:00:00";
+          }
+
+          DateTime beginDt = DateTime.Parse(bS.ToString());
+          DateTime endDt   = DateTime.Parse(eS.ToString());
+
+          double diff = (double)(endDt - beginDt).TotalSeconds;
+
+          for (DateTime dt = beginDt; dt < endDt; dt = dt.AddMinutes(15)) {
+            int n = TimeToIndex(dt);
+            double v = (p / diff);
+            res[name][n] = (double)v;
+          }
+
+          return res;
+        }
+
+        static string StationName(string name) {
+          var map = new Dictionary<string, string>();
+          map.Add("P+R Uithof",                    "P+R De Uithof");
+          map.Add("WKZ",                           "WKZ");
+          map.Add("UMC",                           "UMC");
+          map.Add("Heidelberglaan",                "Heidelberglaan");
+          map.Add("Padualaan",                     "Padualaan");
+          map.Add("Kromme Rijn",                   "Kromme Rijn");
+          map.Add("Galgenwaard",                   "Galgenwaard");
+          map.Add("Vaartscherijn",                 "Vaartsche Rijn");
+          map.Add("Centraal Station Centrumzijde", "Centraal Station");
+          return map[name];
         }
     }
 }

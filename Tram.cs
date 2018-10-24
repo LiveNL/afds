@@ -13,11 +13,11 @@ namespace afds {
     public int      Rounds      { get; set; }
 
     public Tram(int i, Station station) {
-      Number = i;
-      Passengers = 0;
-      Station = station;
+      Number      = i;
+      Passengers  = 0;
+      Station     = station;
       LastStation = station;
-      Rounds = 0;
+      Rounds      = 0;
     }
 
     public int PassengersIn(DateTime dt, int dwellTime, Uithoflijn uithoflijn) {
