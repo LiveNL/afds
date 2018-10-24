@@ -1,0 +1,22 @@
+SIMULATION ASSIGNMENT THE UITHOFLIJN
+
+Jordi Wippert, 6303013
+Thomas Kok, 4124359
+
+In this folder our Report for this simulation assignment can be found, Report.pdf.
+
+Next to that there's our simulation implemented in C#.
+This implementation can be run by:
+
+`dotnet run`
+
+It will execute a simulation based on the input date specified in the data folder. In normal cases the following files will be used:
+
+rates_a.csv
+rates_b.csv
+exit_rates_a.csv
+exit_rates_b.csv
+
+Next to that there are the artificial input files, and their outputs.
+
+Thomas & Jordi

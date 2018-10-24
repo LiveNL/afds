@@ -31,9 +31,9 @@ namespace afds {
             Rates_a = ReadCsv(Filepath);
             const string Filepath1 = "./data/rates_b.csv";
             Rates_b = ReadCsv(Filepath1);
-            const string Filepath2 = "./data/new_exit_rates_a.csv";
+            const string Filepath2 = "./data/exit_rates_a.csv";
             Exit_rates_a = ReadCsv(Filepath2);
-            const string Filepath3 = "./data/new_exit_rates_b.csv";
+            const string Filepath3 = "./data/exit_rates_b.csv";
             Exit_rates_b = ReadCsv(Filepath3);
 
             // Verification of artificial input
