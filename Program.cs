@@ -40,8 +40,9 @@ namespace afds {
 
         Statistics.UpdateAll(i);
       }
-
-      Console.Write(Statistics.ResultsAll());
+      if (n == 1)
+        Console.Write(Statistics.Results());
+      else Console.Write(Statistics.ResultsAll());
     }
 
     static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {

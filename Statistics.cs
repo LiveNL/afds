@@ -307,9 +307,9 @@ namespace afds {
         }
 
         public static string ResultsAll() {
-            string res = "WaitingTime;Delay;DelayPR;DelayCS;OneMin;OneMinCS;OneMinPR;\n";
+            string res = "WaitingTime;Delay;DelayPR;DelayCS;OneMin;OneMinPR;OneMinCS\n";
             for (int i = 0; i < n; i++) {
-                res += string.Format("{0};{1};{2};{3};{4};{5};{6};\n", _AllWaitingTime[i].ToString(), _AllDelay[i].ToString(), _AllDelayPR[i].ToString(), _AllDelayCS[i].ToString(), _AllOneTime[i].ToString(), _AllOneTimePR[i].ToString(), _AllOneTimeCS[i].ToString());
+                res += string.Format("{0};{1};{2};{3};{4};{5};{6}\n", _AllWaitingTime[i].ToString(), _AllDelay[i].ToString(), _AllDelayPR[i].ToString(), _AllDelayCS[i].ToString(), _AllOneTime[i].ToString(), _AllOneTimePR[i].ToString(), _AllOneTimeCS[i].ToString());
             }
             return res;
         }
