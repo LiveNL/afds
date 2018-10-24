@@ -6,11 +6,16 @@ using System.Runtime.CompilerServices;
 
 namespace afds {
   class Program {
+
+    // Config
+    public static DateTime StartDateTime = DateTime.Parse("6:00:00 AM");
+    public static DateTime EndDateTime   = DateTime.Parse("9:30:00 PM");
+    public static int NumberOfRuns       = 100;
+
     static void Main(string[] args) {
       Probabilities.InitProbabilities();
 
-      int n = 100;
-      for (int i = 0; i < n; i++) {
+      for (int i = 0; i < NumberOfRuns; i++) {
         Statistics.InitStatistics();
 
         Uithoflijn uithoflijn = new Uithoflijn();
@@ -19,25 +24,23 @@ namespace afds {
 
         Tram    firstTram  = uithoflijn.Trams[0];
         Station depot      = firstTram.Station;
-        DateTime start     = DateTime.Parse("6:00:00 AM");
+        DateTime start     = StartDateTime;
         firstTram.Start    = start;
         firstTram.Rounds   = 0;
         events.Add(new Event(start, 3, firstTram, depot));
 
         bool endCondition = false;
         while (endCondition == false) {
-          events = events.OrderBy(e => e.DateTime).ToList();
+          events          = events.OrderBy(e => e.DateTime).ToList();
           Event nextEvent = timingRoutine(uithoflijn, state, events);
+          events          = eventRoutine(uithoflijn, state, nextEvent, events);
 
-          events = eventRoutine(uithoflijn, state, nextEvent, events);
-
-          // Check if loop/simulation should be ended
-          if (!events.Any() || state.SimulationClock > DateTime.Parse("9:30:00 PM")) {
+          // Check if End Condition is reached.
+          if (!events.Any() || state.SimulationClock > EndDateTime) {
             endCondition = true;
           };
         }
 
-        // Console.WriteLine(i);
         Statistics.UpdateAll(i);
       }
 
@@ -52,16 +55,7 @@ namespace afds {
     }
 
     static List<Event> eventRoutine(Uithoflijn uithoflijn, State state, Event next, List<Event> events) {
-      // TODO: state.Update(uithoflijn);
-
       return uithoflijn.Update(uithoflijn, next, events);
-    }
-
-    static void LogEvents(List<Event> events) {
-      foreach (Event eventt in events) {
-        Console.WriteLine("{2} - {0}: {1}",
-            eventt.Tram.Number, eventt.Tram.Station.Number, eventt.GetHashCode());
-      }
     }
   }
 }

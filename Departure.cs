@@ -26,13 +26,8 @@ namespace afds {
     }
 
     public Station StationToCheck(Uithoflijn uithoflijn) {
-      if (Station.Number == 8) {
-        return uithoflijn.Stations[10];
-      }
-
-      if (Station.Number == 17) {
-        return uithoflijn.Stations[1];
-      }
+      if (Station.Number == 8)  { return uithoflijn.Stations[10]; }
+      if (Station.Number == 17) { return uithoflijn.Stations[1]; }
 
       return Station.NextStation(uithoflijn.Stations);
     }

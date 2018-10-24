@@ -27,22 +27,22 @@ namespace afds {
             random = new MersenneTwister(12);
             Runtimes_a = new int[] { 110, 78, 82, 60, 100, 59, 243, 135 };
             Runtimes_b = new int[] { 134, 243, 59, 101, 60, 86, 78, 113 };
-            // const string Filepath = "./rates_a.csv";
-            // Rates_a = ReadCsv(Filepath);
-            // const string Filepath1 = "./rates_b.csv";
-            // Rates_b = ReadCsv(Filepath1);
-            // const string Filepath2 = "./new_exit_rates_a.csv";
-            // Exit_rates_a = ReadCsv(Filepath2);
-            // const string Filepath3 = "./new_exit_rates_b.csv";
-            // Exit_rates_b = ReadCsv(Filepath3);
+            const string Filepath = "./rates_a.csv";
+            Rates_a = ReadCsv(Filepath);
+            const string Filepath1 = "./rates_b.csv";
+            Rates_b = ReadCsv(Filepath1);
+            const string Filepath2 = "./new_exit_rates_a.csv";
+            Exit_rates_a = ReadCsv(Filepath2);
+            const string Filepath3 = "./new_exit_rates_b.csv";
+            Exit_rates_b = ReadCsv(Filepath3);
 
             // Verification of artificial input
-            const string FilePathV1 = "./input-data-passengers-025.csv";
-            Rates_a = ReadValidationCsv(FilePathV1, 0, 0);
-            Rates_b = ReadValidationCsv(FilePathV1, 1, 0);
+            // const string FilePathV1 = "./input-data-passengers-01.csv";
+            // Rates_a = ReadValidationCsv(FilePathV1, 0, 0);
+            // Rates_b = ReadValidationCsv(FilePathV1, 1, 0);
 
-            Exit_rates_a = ReadValidationCsv(FilePathV1, 0, 1);
-            Exit_rates_b = ReadValidationCsv(FilePathV1, 1, 1);
+            // Exit_rates_a = ReadValidationCsv(FilePathV1, 0, 1);
+            // Exit_rates_b = ReadValidationCsv(FilePathV1, 1, 1);
         }
 
         //The functions that are directly called in the simulation.
@@ -233,7 +233,7 @@ namespace afds {
 
           using (var reader = new StreamReader(filepath)) {
             List<string> list = new List<string>();
-            var first_line    = reader.ReadLine(); // omit this one
+            var first_line    = reader.ReadLine(); // omit this line
 
             while (!reader.EndOfStream) {
                 var line = reader.ReadLine();

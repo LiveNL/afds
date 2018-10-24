@@ -4,15 +4,15 @@ using System.Linq;
 
 namespace afds {
   public class StationCheck {
+    // Config
+    public int stationCheckAfterS = 10;
+
     public DateTime DateTime { get; set; }
     public Station  Station  { get; set; }
     public Tram     Tram     { get; set; }
 
-    public int ArrivalEventType = 1;
+    public int ArrivalEventType      = 1;
     public int StationCheckEventType = 2;
-
-    // Config
-    public int stationCheckAfterS = 10;
 
     public StationCheck(DateTime dt, Station station, Tram tram) {
       DateTime = dt;

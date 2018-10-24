@@ -4,13 +4,14 @@ using System.Linq;
 
 namespace afds {
   public class Arrival {
-    public DateTime DateTime { get; set; }
-    public Station  Station  { get; set; }
-    public Tram     Tram     { get; set; }
-
+    // Config
     public int DepartureEventType = 0;
     public int MinQ               = 180;
     public int[] QStations        = { 8, 9, 17, 0 };
+
+    public DateTime DateTime { get; set; }
+    public Station  Station  { get; set; }
+    public Tram     Tram     { get; set; }
 
     public Arrival(Event e, Station station, Tram tram) {
       DateTime = e.DateTime;

@@ -27,13 +27,11 @@ namespace afds {
     }
 
     public int WaitingPeople(Uithoflijn uithoflijn) {
-      DateTime now = LastArrivalEvent.DateTime;
-
-      DateTime then = LatestDeparture(uithoflijn);
-
+      DateTime now              = LastArrivalEvent.DateTime;
+      DateTime then             = LatestDeparture(uithoflijn);
       List<DateTime> passengers = Passengers(then, now);
-      WaitingList.AddRange(passengers);
 
+      WaitingList.AddRange(passengers);
       Waiting = Waiting + passengers.Count;
       return Waiting;
     }
@@ -96,14 +94,6 @@ namespace afds {
       }
     }
 
-    public void LogWaitingPeople(int p, DateTime then) {
-      Console.WriteLine(
-        "Then: {0} | Now: {1} | passengers: {2,-4} | Station: {3,-20} | Tram: {4}",
-        then.TimeOfDay, LastArrivalEvent.DateTime.TimeOfDay, p,
-        StationDict()[Number], LastArrivalEvent.Tram.Number
-      );
-    }
-
     public Dictionary<int, string> StationDict() {
       var map = new Dictionary<int, string>();
       map.Add(0, "P+R De Uithof");    map.Add(17, "P+R De Uithof");
@@ -118,6 +108,14 @@ namespace afds {
 
       map.Add(666, "Depot");
       return map;
+    }
+
+    public void LogWaitingPeople(int p, DateTime then) {
+      Console.WriteLine(
+        "Then: {0} | Now: {1} | passengers: {2,-4} | Station: {3,-20} | Tram: {4}",
+        then.TimeOfDay, LastArrivalEvent.DateTime.TimeOfDay, p,
+        StationDict()[Number], LastArrivalEvent.Tram.Number
+      );
     }
   }
 }

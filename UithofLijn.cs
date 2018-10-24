@@ -17,9 +17,9 @@ namespace afds {
     public int MaxFSchedule       = 17 + Q;
     public DateTime LastRemoval   = DateTime.Parse("6:45:00 PM");
 
-    public Tram[] Trams { get; set; }
+    public Tram[] Trams       { get; set; }
     public Station[] Stations { get; set; }
-    public Cross[] Crosses { get; set; }
+    public Cross[] Crosses    { get; set; }
 
     public Uithoflijn() {
       Station[] stations = new Station[STATIONS];
@@ -56,7 +56,6 @@ namespace afds {
           departure.Station.LastDepartureEvent = e;
           departure.Station.Tram               = null;
 
-          // ScheduleStationCheck checks after traveltime
           return departure.ScheduleStationCheck(events, uithoflijn);
 
 
@@ -235,9 +234,6 @@ namespace afds {
           eventText = "Opencrs"; break;
       }
 
-      // Console.WriteLine("Event: {0}", e.EventType);
-      // Console.WriteLine("TRAM: {0}", tram.Number);
-      // Console.WriteLine("Station: {0}", station.Number);
       Console.WriteLine("{0} : {1} tram {2,-2} at {3,-2} : {4}",
         e.DateTime, eventText, tram.Number, station.Number, station.StationDict()[station.Number]);
     }

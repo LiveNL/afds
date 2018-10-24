@@ -4,6 +4,10 @@ using System.Linq;
 
 namespace afds {
   public class CrossCheck {
+    // Config
+    public int OpenCrossAfterS      = 60;
+    public int nextCrossCheckAfterS = 2;
+
     public DateTime DateTime { get; set; }
     public Station  Station  { get; set; }
     public Tram     Tram     { get; set; }
@@ -11,10 +15,6 @@ namespace afds {
     public int ArrivalEventType     = 1;
     public int CrossCheckEventType  = 4;
     public int OpenCrossEventType   = 5;
-
-    // Config
-    public int OpenCrossAfterS      = 60;
-    public int nextCrossCheckAfterS = 2;
 
     public CrossCheck (Event e, Station station, Tram tram) {
       DateTime = e.DateTime;
