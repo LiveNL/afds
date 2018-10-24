@@ -42,7 +42,7 @@ namespace afds {
 
         Statistics.UpdateAll(i);
       }
-      if (n == 1)
+      if (NumberOfRuns == 1)
         Console.Write(Statistics.Results());
       else Console.Write(Statistics.ResultsAll());
     }
