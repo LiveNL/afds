@@ -16,6 +16,7 @@ namespace afds {
     public static int Q           = 5;
     public int MaxFSchedule       = 17 + Q;
     public DateTime LastRemoval   = DateTime.Parse("6:45:00 PM");
+    public DateTime SimulationClock { get; set; }
 
     public Tram[] Trams       { get; set; }
     public Station[] Stations { get; set; }

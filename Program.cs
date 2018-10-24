@@ -19,7 +19,6 @@ namespace afds {
         Statistics.InitStatistics();
 
         Uithoflijn uithoflijn = new Uithoflijn();
-        State state           = new State();
         List<Event> events    = new List<Event>();
 
         Tram    firstTram  = uithoflijn.Trams[0];
@@ -32,11 +31,11 @@ namespace afds {
         bool endCondition = false;
         while (endCondition == false) {
           events          = events.OrderBy(e => e.DateTime).ToList();
-          Event nextEvent = timingRoutine(uithoflijn, state, events);
-          events          = eventRoutine(uithoflijn, state, nextEvent, events);
+          Event nextEvent = timingRoutine(uithoflijn, events);
+          events          = eventRoutine(uithoflijn, nextEvent, events);
 
           // Check if End Condition is reached.
-          if (!events.Any() || state.SimulationClock > EndDateTime) {
+          if (!events.Any() || uithoflijn.SimulationClock > EndDateTime) {
             endCondition = true;
           };
         }
@@ -47,14 +46,14 @@ namespace afds {
       Console.Write(Statistics.ResultsAll());
     }
 
-    static Event timingRoutine(Uithoflijn uithoflijn, State state, List<Event> events) {
+    static Event timingRoutine(Uithoflijn uithoflijn, List<Event> events) {
       Event nextEvent = events[0];
-      state.SimulationClock = nextEvent.DateTime;
+      uithoflijn.SimulationClock = nextEvent.DateTime;
       events.RemoveAt(0);
       return nextEvent;
     }
 
-    static List<Event> eventRoutine(Uithoflijn uithoflijn, State state, Event next, List<Event> events) {
+    static List<Event> eventRoutine(Uithoflijn uithoflijn, Event next, List<Event> events) {
       return uithoflijn.Update(uithoflijn, next, events);
     }
   }
